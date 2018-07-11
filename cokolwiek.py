@@ -4,5 +4,6 @@
 import os
 
 print ("Zaczynam")
-for x in os.walk("do_zrobienia"):
+if _name_ == "_main_":
+    for x in os.walk("do_zrobienia"):
         print(x)
