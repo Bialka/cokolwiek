@@ -21,8 +21,8 @@ def zbierz_dane_o_mp3(katalog):
     return slownik
 
 
-def zapis(slownik):
-    f = open('cokolwiek.txt', 'w')
+def zapis(slownik, sciezka):
+    f = open(sciezka, 'w')
 
     for klucz in slownik.keys():
         f.write(klucz + '\n')
@@ -32,5 +32,13 @@ def zapis(slownik):
 
 if __name__ == "__main__":
     print("Zaczynam")
-    slownik = zbierz_dane_o_mp3("do_zrobienia")          
-    zapis(slownik)
+    sciezka_pliku = 'cokolwiek.txt'
+    if os.path.isfile(sciezka_pliku):
+        f = open(sciezka_pliku, 'r')
+        x = f.read()
+        f.close()
+        print(x)
+        os.remove(sciezka_pliku)
+    else:
+        slownik = zbierz_dane_o_mp3("do_zrobienia")
+        zapis(slownik, sciezka_pliku)
