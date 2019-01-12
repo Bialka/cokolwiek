@@ -22,21 +22,17 @@ def zbierz_dane_o_mp3(katalog):
 
 
 def zapis(slownik, sciezka):
-    f = open(sciezka, 'w')
-
-    for klucz in slownik.keys():
-        f.write(klucz + '\n')
-
-    f.close()
+    with open(sciezka, 'w') as f:
+        for klucz in slownik.keys():
+            f.write(klucz + '\n')
 
 
 if __name__ == "__main__":
     print("Zaczynam")
     sciezka_pliku = 'cokolwiek.txt'
     if os.path.isfile(sciezka_pliku):
-        f = open(sciezka_pliku, 'r')
-        x = f.read()
-        f.close()
+        with open(sciezka_pliku, 'r') as f:
+            x = f.read()
         print(x)
         os.remove(sciezka_pliku)
     else:
