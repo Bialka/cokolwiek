@@ -3,6 +3,7 @@
 
 import os
 
+
 def zbierz_dane_o_mp3(katalog):
     slownik = {}
     licznik_plikow = 0
@@ -20,7 +21,16 @@ def zbierz_dane_o_mp3(katalog):
     return slownik
 
 
-print("Zaczynam")
+def zapis(slownik):
+    f = open('cokolwiek.txt', 'w')
+
+    for klucz in slownik.keys():
+        f.write(klucz + '\n')
+
+    f.close()
+
+
 if __name__ == "__main__":
+    print("Zaczynam")
     slownik = zbierz_dane_o_mp3("do_zrobienia")          
-    print(slownik)
+    zapis(slownik)
