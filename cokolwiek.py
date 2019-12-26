@@ -23,8 +23,9 @@ def zbierz_dane_o_mp3(katalog):
 
 def zapis(slownik, sciezka):
     with open(sciezka, 'w') as f:
-        for klucz in slownik.keys():
-            f.write(klucz + '\n')
+        for klucz, pliki in slownik.items():
+            ilosc_plikow = len(pliki)
+            f.write(" - | {0: <50}| {1: >3}\n".format(klucz, ilosc_plikow))
 
 
 if __name__ == "__main__":
