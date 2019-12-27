@@ -29,18 +29,22 @@ def zapis(slownik, sciezka):
             f.write(" - | {0: <50}| {1: >3}\n".format(klucz, ilosc_plikow))
 
 
+def usuwanie_kat(sciezka_pliku):
+    with open(sciezka_pliku, 'r') as f:
+        x = f.read().strip()
+        for ln in x.split("\n"):
+            ln = ln.split("|")
+            if ln[0].strip() == "u":
+                shutil.rmtree(ln[1].strip(), ignore_errors=True)
+            print(ln)
+    os.remove(sciezka_pliku)
+
+
 if __name__ == "__main__":
     print("Zaczynam")
     sciezka_pliku = 'cokolwiek.txt'
     if os.path.isfile(sciezka_pliku):
-        with open(sciezka_pliku, 'r') as f:
-            x = f.read().strip()
-            for ln in x.split("\n"):
-                ln = ln.split("|")
-                if ln[0].strip() == "u":
-                    shutil.rmtree(ln[1].strip(), ignore_errors=True)
-                print(ln)
-        os.remove(sciezka_pliku)
+       usuwanie_kat(sciezka_pliku)
     else:
         slownik = zbierz_dane_o_mp3("do_zrobienia")
         zapis(slownik, sciezka_pliku)
