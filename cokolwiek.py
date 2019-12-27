@@ -3,6 +3,7 @@
 
 import os
 
+import shutil
 
 def zbierz_dane_o_mp3(katalog):
     slownik = {}
@@ -34,8 +35,13 @@ if __name__ == "__main__":
     if os.path.isfile(sciezka_pliku):
         with open(sciezka_pliku, 'r') as f:
             x = f.read()
-        print(x)
+            for ln in x.split("\n"):
+                ln = x.split("|")
+                print(ln)
         os.remove(sciezka_pliku)
     else:
         slownik = zbierz_dane_o_mp3("do_zrobienia")
         zapis(slownik, sciezka_pliku)
+
+
+
