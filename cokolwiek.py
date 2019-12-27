@@ -37,8 +37,8 @@ if __name__ == "__main__":
             x = f.read().strip()
             for ln in x.split("\n"):
                 ln = ln.split("|")
-                if ln[0] == " u ":
-                    shutil.rmtree([1], ignore_errors=True)
+                if ln[0].strip() == "u":
+                    shutil.rmtree(ln[1].strip(), ignore_errors=True)
                 print(ln)
         os.remove(sciezka_pliku)
     else:
