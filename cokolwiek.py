@@ -34,14 +34,13 @@ if __name__ == "__main__":
     sciezka_pliku = 'cokolwiek.txt'
     if os.path.isfile(sciezka_pliku):
         with open(sciezka_pliku, 'r') as f:
-            x = f.read()
+            x = f.read().strip()
             for ln in x.split("\n"):
-                ln = x.split("|")
+                ln = ln.split("|")
+                if ln[0] == " u ":
+                    shutil.rmtree([1], ignore_errors=True)
                 print(ln)
         os.remove(sciezka_pliku)
     else:
         slownik = zbierz_dane_o_mp3("do_zrobienia")
         zapis(slownik, sciezka_pliku)
-
-
-
