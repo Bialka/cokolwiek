@@ -29,22 +29,44 @@ def zapis(slownik, sciezka):
             f.write(" - | {0: <50}| {1: >3}\n".format(klucz, ilosc_plikow))
 
 
-def usuwanie_kat(sciezka_pliku):
+def obrobka_plikow(sciezka_pliku):
     with open(sciezka_pliku, 'r') as f:
         x = f.read().strip()
         for ln in x.split("\n"):
             ln = ln.split("|")
             if ln[0].strip() == "u":
                 shutil.rmtree(ln[1].strip(), ignore_errors=True)
+            elif ln[0].strip() == "p":
+                przenoszenie_plik(ln[1].strip())
             print(ln)
     os.remove(sciezka_pliku)
+
+
+def przenoszenie_plik(obecny_katalog):
+    podkatalog_docelowy = obecny_katalog.split(os.sep)[-1]
+    for x, y, z in os.walk(obecny_katalog):
+        for f in z:
+            source_pth = x + os.sep + f
+            destination_pth = katalog_docelowy + os.sep + podkatalog_docelowy
+            os.makedirs(destination_pth)
+            shutil.move(source_pth, destination_pth)
+        break
+    # todo: usuwanie drzewa
+    os.remove(obecny_katalog)
+
 
 
 if __name__ == "__main__":
     print("Zaczynam")
     sciezka_pliku = 'cokolwiek.txt'
+    obecny_katalog = "do_zrobienia"
+    katalog_docelowy = "zrobione"
+
+    if not os.path.exists(katalog_docelowy):
+        os.makedirs(katalog_docelowy)
+
     if os.path.isfile(sciezka_pliku):
-       usuwanie_kat(sciezka_pliku)
+        obrobka_plikow(sciezka_pliku)
     else:
         slownik = zbierz_dane_o_mp3("do_zrobienia")
         zapis(slownik, sciezka_pliku)
