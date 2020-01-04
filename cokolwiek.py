@@ -52,7 +52,7 @@ def przenoszenie_plik(obecny_katalog):
             shutil.move(source_pth, destination_pth)
         break
     # todo: usuwanie drzewa
-    os.remove(obecny_katalog)
+    shutil.rmtree(obecny_katalog)
 
 
 
