@@ -26,7 +26,8 @@ def zapis(slownik, sciezka):
     with open(sciezka, 'w') as f:
         for klucz, pliki in slownik.items():
             ilosc_plikow = len(pliki)
-            f.write(" - | {0: <50}| {1: >3}\n".format(klucz, ilosc_plikow))
+            podkatalog_docelowy = klucz.split(os.sep)[-1]
+            f.write(" - | {0: <50}|{1: <25} | {2: >3}\n".format(klucz, podkatalog_docelowy, ilosc_plikow))
 
 
 def obrobka_plikow(sciezka_pliku):
