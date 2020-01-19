@@ -38,18 +38,17 @@ def obrobka_plikow(sciezka_pliku):
             if ln[0].strip() == "u":
                 shutil.rmtree(ln[1].strip(), ignore_errors=True)
             elif ln[0].strip() == "p":
-                przenoszenie_plik(ln[1].strip())
+                przenoszenie_plik(ln[1].strip(), ln[2].strip())
             print(ln)
     os.remove(sciezka_pliku)
 
 
-def przenoszenie_plik(obecny_katalog):
-    podkatalog_docelowy = obecny_katalog.split(os.sep)[-1]
+def przenoszenie_plik(obecny_katalog, podkatalog_docelowy):
     for x, y, z in os.walk(obecny_katalog):
+        destination_pth = katalog_docelowy + os.sep + podkatalog_docelowy
+        os.makedirs(destination_pth, exist_ok=True)
         for f in z:
             source_pth = x + os.sep + f
-            destination_pth = katalog_docelowy + os.sep + podkatalog_docelowy
-            os.makedirs(destination_pth)
             shutil.move(source_pth, destination_pth)
         break
     # todo: usuwanie drzewa
