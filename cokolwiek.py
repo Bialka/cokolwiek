@@ -5,29 +5,21 @@ import os
 
 import shutil
 
+import dir_class
+
 def zbierz_dane_o_mp3(katalog):
-    slownik = {}
-    licznik_plikow = 0
-    licznik_katalogow = 0
+    music_files_dirs = []
     for x in os.walk(katalog):
-        nowa_lista = []
-        for nazwa_pliku in x[2]:
-            if nazwa_pliku.endswith(".mp3"):
-                nowa_lista.append(nazwa_pliku)
-                licznik_plikow += 1
-        if nowa_lista:
-            slownik[(x[0])] = nowa_lista
-            licznik_katalogow += 1
-    print("Znaleziono {} plików w {} katalogach.".format(licznik_plikow, licznik_katalogow))
-    return slownik
+        cos_dir = dir_class.Dir(x[0])
+        if cos_dir.is_music_files_dir():
+            music_files_dirs.append(cos_dir)
+    return music_files_dirs
 
 
-def zapis(slownik, sciezka):
+def zapis(music_files_dirs, sciezka):
     with open(sciezka, 'w') as f:
-        for klucz, pliki in slownik.items():
-            ilosc_plikow = len(pliki)
-            podkatalog_docelowy = klucz.split(os.sep)[-1]
-            f.write(" - | {0: <50}|{1: <25} | {2: >3}\n".format(klucz, podkatalog_docelowy, ilosc_plikow))
+        for cos_dir in music_files_dirs:
+            f.write(cos_dir.get_control_string())
 
 
 def obrobka_plikow(sciezka_pliku):
@@ -68,5 +60,5 @@ if __name__ == "__main__":
     if os.path.isfile(sciezka_pliku):
         obrobka_plikow(sciezka_pliku)
     else:
-        slownik = zbierz_dane_o_mp3("do_zrobienia")
-        zapis(slownik, sciezka_pliku)
+        music_files_dirs = zbierz_dane_o_mp3("do_zrobienia")
+        zapis(music_files_dirs, sciezka_pliku)
