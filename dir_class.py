@@ -1,6 +1,7 @@
 
 import os
 
+import shutil
 
 class Dir:
     def __init__(self, base_dir):
@@ -28,3 +29,18 @@ class Dir:
 
     def get_music_files_count(self):
         return len(self.music_files)
+
+    def move(self, obecny_katalog, podkatalog_docelowy):
+        katalog_docelowy = "zrobione"
+        for x, y, z in os.walk(obecny_katalog):
+            destination_pth = katalog_docelowy + os.sep + podkatalog_docelowy
+            os.makedirs(destination_pth, exist_ok=True)
+            for f in z:
+                source_pth = x + os.sep + f
+                shutil.move(source_pth, destination_pth)
+            break
+            # todo: usuwanie drzewa
+        shutil.rmtree(obecny_katalog)
+
+    def delete(self, to_delete):
+        shutil.rmtree(to_delete, ignore_errors=True)

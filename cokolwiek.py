@@ -27,25 +27,13 @@ def obrobka_plikow(sciezka_pliku):
         x = f.read().strip()
         for ln in x.split("\n"):
             ln = ln.split("|")
+            cos_dir = dir_class.Dir(ln[1].strip())
             if ln[0].strip() == "u":
-                shutil.rmtree(ln[1].strip(), ignore_errors=True)
+                cos_dir.delete(ln[1].strip())
             elif ln[0].strip() == "p":
-                przenoszenie_plik(ln[1].strip(), ln[2].strip())
+                cos_dir.move(ln[1].strip(), ln[2].strip())
             print(ln)
     os.remove(sciezka_pliku)
-
-
-def przenoszenie_plik(obecny_katalog, podkatalog_docelowy):
-    for x, y, z in os.walk(obecny_katalog):
-        destination_pth = katalog_docelowy + os.sep + podkatalog_docelowy
-        os.makedirs(destination_pth, exist_ok=True)
-        for f in z:
-            source_pth = x + os.sep + f
-            shutil.move(source_pth, destination_pth)
-        break
-    # todo: usuwanie drzewa
-    shutil.rmtree(obecny_katalog)
-
 
 
 if __name__ == "__main__":
