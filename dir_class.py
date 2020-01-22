@@ -44,3 +44,13 @@ class Dir:
 
     def delete(self, to_delete):
         shutil.rmtree(to_delete, ignore_errors=True)
+
+    @classmethod
+    def parse_control_string(cls, control_string):
+        sciezka_pliku = "cokolwiek.txt"
+        with open(sciezka_pliku, 'r') as f:
+            x = f.read().strip()
+            for ln in x.split("\n"):
+                control_string = ln.split("|")
+                print(control_string)
+        pass
