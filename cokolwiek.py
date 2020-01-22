@@ -26,7 +26,7 @@ def obrobka_plikow(sciezka_pliku):
     with open(sciezka_pliku, 'r') as f:
         x = f.read().strip()
         for ln in x.split("\n"):
-            ln = ln.split("|")
+            ln = dir_class.Dir.parse_control_string(ln)
             cos_dir = dir_class.Dir(ln[1].strip())
             if ln[0].strip() == "u":
                 cos_dir.delete(ln[1].strip())
