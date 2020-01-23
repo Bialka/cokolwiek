@@ -3,6 +3,7 @@ import os
 
 import shutil
 
+
 class Dir:
     def __init__(self, base_dir):
         self.base_dir = base_dir
@@ -30,21 +31,19 @@ class Dir:
     def get_music_files_count(self):
         return len(self.music_files)
 
-    def move(self, obecny_katalog, podkatalog_docelowy):
-        katalog_docelowy = "zrobione"
-        for x, y, z in os.walk(obecny_katalog):
-            destination_pth = katalog_docelowy + os.sep + podkatalog_docelowy
+    def move(self, destination_subdir, destination_dir):
+        for x, y, z in os.walk(current_dir):
+            destination_pth = destination_dir + os.sep + destination_subdir
             os.makedirs(destination_pth, exist_ok=True)
             for f in z:
                 source_pth = x + os.sep + f
                 shutil.move(source_pth, destination_pth)
             break
-            # todo: usuwanie drzewa
-        shutil.rmtree(obecny_katalog)
+        shutil.rmtree(current_dir)
 
-    def delete(self, to_delete):
-        shutil.rmtree(to_delete, ignore_errors=True)
+    def delete(self, base_dir):
+        shutil.rmtree(base_dir, ignore_errors=True)
 
     @classmethod
     def parse_control_string(cls, control_string):
-        return control_string.split("|")
+        return [s.strip() for s in control_string.split("|")]
