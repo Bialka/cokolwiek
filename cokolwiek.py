@@ -7,7 +7,7 @@ import shutil
 
 import dir_class
 
-def zbierz_dane_o_mp3(directory):
+def collect_data_about_mp3(directory):
     music_files_dirs = []
     for x in os.walk(directory):
         cos_dir = dir_class.Dir(x[0])
@@ -16,13 +16,13 @@ def zbierz_dane_o_mp3(directory):
     return music_files_dirs
 
 
-def zapis(music_files_dirs, path):
+def record(music_files_dirs, path):
     with open(path, 'w') as f:
         for cos_dir in music_files_dirs:
             f.write(cos_dir.get_control_string())
 
 
-def obrobka_plikow(file_path):
+def files_processing(file_path):
     with open(file_path, 'r') as f:
         x = f.read().strip()
         for ln in x.split("\n"):
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         os.makedirs(destination_dir)
 
     if os.path.isfile(file_path):
-        obrobka_plikow(file_path)
+        files_processing(file_path)
     else:
-        music_files_dirs = zbierz_dane_o_mp3("do_zrobienia")
-        zapis(music_files_dirs, file_path)
+        music_files_dirs = collect_data_about_mp3("do_zrobienia")
+        record(music_files_dirs, file_path)
