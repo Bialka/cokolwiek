@@ -33,9 +33,8 @@ class Dir:
         return len(self.music_files)
 
     def move(self, destination_subdir):
-        current_dir = "do_zrobienia"
         destination_dir = "zrobione"
-        for x, y, z in os.walk(current_dir):
+        for x, y, z in os.walk(self.base_dir):
             destination_pth = destination_dir + os.sep + destination_subdir
             os.makedirs(destination_pth, exist_ok=True)
             for f in z:
