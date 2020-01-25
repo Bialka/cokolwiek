@@ -3,6 +3,7 @@ import os
 
 import shutil
 
+from mutagen.easyid3 import EasyID3
 
 class Dir:
     def __init__(self, base_dir):
@@ -32,6 +33,7 @@ class Dir:
         return len(self.music_files)
 
     def move(self, destination_subdir, destination_dir):
+        current_dir = "do_zrobienia"
         for x, y, z in os.walk(current_dir):
             destination_pth = destination_dir + os.sep + destination_subdir
             os.makedirs(destination_pth, exist_ok=True)
@@ -47,3 +49,7 @@ class Dir:
     @classmethod
     def parse_control_string(cls, control_string):
         return [s.strip() for s in control_string.split("|")]
+
+    def get_tags(self):
+        for f in self.music_files:
+            audio = EasyID3(f)
