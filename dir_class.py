@@ -33,17 +33,16 @@ class Dir:
         return len(self.music_files)
 
     def move(self, destination_dir, destination_subdir):
-        current_dir = "do_zrobienia"
         for x, y, z in os.walk(self.base_dir):
-            destination_pth = destination_dir + os.sep + destination_subdir
+            destination_pth = destination_dir + os.sep
             os.makedirs(destination_pth, exist_ok=True)
             for f in z:
-                source_pth = x + os.sep + f
+                source_pth = x + os.sep
                 shutil.move(source_pth, destination_pth)
             break
-        shutil.rmtree(current_dir)
+        shutil.rmtree(self.base_dir)
 
-    def delete(self, base_dir):
+    def delete(self):
         shutil.rmtree(self.base_dir, ignore_errors=True)
 
     @classmethod
