@@ -22,16 +22,16 @@ def record(music_files_dirs, path):
             f.write(cos_dir.get_control_string())
 
 
-def files_processing(file_path):
+def files_processing(file_path, destination_dir, current_dir):
     with open(file_path, 'r') as f:
         x = f.read().strip()
         for ln in x.split("\n"):
             ln = dir_class.Dir.parse_control_string(ln)
             cos_dir = dir_class.Dir(ln[1])
             if ln[0] == "u":
-                cos_dir.delete(ln[1])
+                cos_dir.delete()
             elif ln[0] == "p":
-                cos_dir.move(ln[1], ln[2])
+                cos_dir.move(destination_dir, ln[2])
     os.remove(file_path)
 
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         os.makedirs(destination_dir)
 
     if os.path.isfile(file_path):
-        files_processing(file_path)
+        files_processing(file_path, destination_dir, current_dir)
     else:
         music_files_dirs = collect_data_about_mp3("do_zrobienia")
         record(music_files_dirs, file_path)
