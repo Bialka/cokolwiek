@@ -50,5 +50,8 @@ class Dir:
         return [s.strip() for s in control_string.split("|")]
 
     def get_tags(self):
-        for f in self.music_files:
+        for f in music_files:
             audio = EasyID3(f)
+            album_title = audio[album]
+            album_artist = audio[albumartist]
+            audio.save()
