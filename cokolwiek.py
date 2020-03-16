@@ -22,7 +22,7 @@ def record(music_files_dirs, path):
             f.write(cos_dir.get_control_string())
 
 
-def files_processing(file_path, destination_dir, current_dir):
+def files_processing(file_path, destination_dir):
     with open(file_path, 'r') as f:
         x = f.read().strip()
         for ln in x.split("\n"):
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         os.makedirs(destination_dir)
 
     if os.path.isfile(file_path):
-        files_processing(file_path, destination_dir, current_dir)
+        files_processing(file_path, destination_dir)
     else:
         music_files_dirs = collect_data_about_mp3("do_zrobienia")
         record(music_files_dirs, file_path)
