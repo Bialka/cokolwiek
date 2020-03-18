@@ -47,5 +47,5 @@ if __name__ == "__main__":
     if os.path.isfile(file_path):
         files_processing(file_path, destination_dir)
     else:
-        music_files_dirs = collect_data_about_mp3("do_zrobienia")
+        music_files_dirs = collect_data_about_mp3(current_dir)
         record(music_files_dirs, file_path)
