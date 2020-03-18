@@ -27,6 +27,7 @@ class Dir:
     def get_control_string(self):
         target_dir_name = self.base_dir.split(os.sep)[-1]
         music_files_count = self.get_music_files_count()
+        tags = self.get_tags()
         return " - | {0: <50}|{1: <25} | {2: >3}\n".format(self.base_dir, target_dir_name, music_files_count)
 
     def get_music_files_count(self):
@@ -50,8 +51,9 @@ class Dir:
         return [s.strip() for s in control_string.split("|")]
 
     def get_tags(self):
-        for f in music_files:
+        for f in self.music_files:
             audio = EasyID3(f)
             album_title = audio[album]
             album_artist = audio[albumartist]
-            audio.save()
+        tags = {"album_title": album_title, "album_artist": album_artist}
+        return tags
