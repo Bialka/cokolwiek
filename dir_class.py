@@ -28,13 +28,13 @@ class Dir:
         target_dir_name = self.base_dir.split(os.sep)[-1]
         music_files_count = self.get_music_files_count()
         tags = self.get_tags()
-        return " - | {0: <50}|{1: <25} | {2: >3}\n".format(self.base_dir, target_dir_name, music_files_count)
+        return " - | {0: <50}|{1: <25} |{1: <25} | {2: >3}\n".format(self.base_dir, album_title, album_author, music_files_count)
 
     def get_music_files_count(self):
         return len(self.music_files)
 
-    def move(self, destination_dir, destination_subdir):
-        destination_pth = destination_dir + os.sep + destination_subdir
+    def move(self, destination_dir, album_author, album_title):
+        destination_pth = destination_dir + os.sep + album_author + os.sep + album_title
         os.makedirs(destination_pth, exist_ok=True)
         for x, y, z in os.walk(self.base_dir):
             for f in z:
