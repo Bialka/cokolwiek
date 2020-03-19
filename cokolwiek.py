@@ -31,7 +31,7 @@ def files_processing(file_path, destination_dir):
             if ln[0] == "u":
                 cos_dir.delete()
             elif ln[0] == "p":
-                cos_dir.move(destination_dir, ln[2], ln[1])
+                cos_dir.move(destination_dir, ln[3], ln[2])
     os.remove(file_path)
 
 
