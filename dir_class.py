@@ -5,6 +5,7 @@ import shutil
 
 from mutagen.easyid3 import EasyID3
 
+
 class Dir:
     def __init__(self, base_dir):
         self.base_dir = base_dir
@@ -25,7 +26,6 @@ class Dir:
         return pth.endswith(".mp3")
 
     def get_control_string(self):
-        target_dir_name = self.base_dir.split(os.sep)[-1]
         music_files_count = self.get_music_files_count()
         tags = self.get_tags()
         album_title = str(tags["album_title"])
@@ -55,7 +55,26 @@ class Dir:
     def get_tags(self):
         for f in self.music_files:
             audio = EasyID3(self.base_dir + os.sep + f)
-            album_title = audio["album"]
-            album_artist = audio["albumartist"]
+            try:
+                album_title = audio["album"][0]
+            except KeyError:
+                album_title = ""
+            try:
+                album_artist = audio["albumartist"][0]
+            except KeyError:
+                album_artist = ""
         tags = {"album_title": album_title, "album_artist": album_artist}
+        cos = {}
+        selected = [0, "whoever"]
+        for x in tags.values():
+            if x == "":
+                continue
+            if x not in cos:
+                cos[x] = 0
+            cos[x] += 1
+            if selected[0] < cos[x]:
+                selected = [cos[x], x]
+            elif selected[0] == cos[x]:
+                selected += [x]
+        print(selected[1:] if selected[0] else None)
         return tags
