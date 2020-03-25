@@ -53,6 +53,9 @@ class Dir:
         return [s.strip() for s in control_string.split("|")]
 
     def get_tags(self):
+        cos = {}
+        selected_album_artist = [0, "whoever"]
+        selected_album_title = [0, "whatever"]
         for f in self.music_files:
             audio = EasyID3(self.base_dir + os.sep + f)
             try:
@@ -63,18 +66,25 @@ class Dir:
                 album_artist = audio["albumartist"][0]
             except KeyError:
                 album_artist = ""
-        tags = {"album_title": album_title, "album_artist": album_artist}
-        cos = {}
-        selected = [0, "whoever"]
-        for x in tags.values():
-            if x == "":
+            if album_artist == "":
                 continue
-            if x not in cos:
-                cos[x] = 0
-            cos[x] += 1
-            if selected[0] < cos[x]:
-                selected = [cos[x], x]
-            elif selected[0] == cos[x]:
-                selected += [x]
-        print(selected[1:] if selected[0] else None)
+            if album_artist not in cos:
+                cos[album_artist] = 0
+            cos[album_artist] += 1
+            if selected_album_artist[0] < cos[album_artist]:
+                selected_album_artist = [cos[album_artist], album_artist]
+            elif selected_album_artist[0] == cos[album_artist]:
+                selected_album_artist += [album_artist]
+            if album_title == "":
+                continue
+            if album_title not in cos:
+                cos[album_title] = 0
+            cos[album_title] += 1
+            if selected_album_title[0] < cos[album_title]:
+                selected_album_title = [cos[album_title], album_title]
+            elif selected_album_title[0] == cos[album_title]:
+                selected_album_title += [album_title]
+        print(selected_album_artist[1:] if selected_album_artist[0] else None)
+        print(selected_album_title[1:] if selected_album_title[0] else None)
+        tags = {"album_title": album_title, "album_artist": album_artist}
         return tags
