@@ -5,7 +5,6 @@ import shutil
 
 from mutagen.easyid3 import EasyID3
 
-
 class Dir:
     def __init__(self, base_dir):
         self.base_dir = base_dir
@@ -28,7 +27,6 @@ class Dir:
     def get_control_string(self):
         music_files_count = self.get_music_files_count()
         tags = self.get_tags()
-        print(tags)
         album_title = str(tags["album_title"][0]) if len(tags["album_title"]) == 1 else "Wiele"
         album_artist = str(tags["album_artist"][0]) if len(tags["album_artist"]) == 1 else "Wiele"
         return " - | {0: <50}|{1: <25} |{2: <25} | {3: >3}\n".format(self.base_dir, album_title, album_artist, music_files_count)
@@ -43,6 +41,8 @@ class Dir:
             for f in z:
                 source_pth = x + os.sep + f
                 shutil.move(source_pth, destination_pth)
+                if self.is_music_file(f):
+                    self.update_tags(album_artist, album_title, destination_pth + os.sep + f)
             break
         shutil.rmtree(self.base_dir)
 
@@ -88,3 +88,9 @@ class Dir:
         r1 = (selected_album_artist[1:] if selected_album_artist[0] else None)
         r2 = (selected_album_title[1:] if selected_album_title[0] else None)
         return {"album_artist": r1, "album_title": r2}
+
+    def update_tags(self, album_artist, album_title, f):
+        audio = EasyID3(f)
+        audio["album"] = album_title
+        audio["albumartist"] = album_artist
+        audio.save()
