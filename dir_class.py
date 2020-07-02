@@ -28,8 +28,9 @@ class Dir:
     def get_control_string(self):
         music_files_count = self.get_music_files_count()
         tags = self.get_tags()
-        album_title = str(tags["album_title"])
-        album_artist = str(tags["album_artist"])
+        print(tags)
+        album_title = str(tags["album_title"][0]) if len(tags["album_title"]) == 1 else "Wiele"
+        album_artist = str(tags["album_artist"][0]) if len(tags["album_title"]) == 1 else "Wiele"
         return " - | {0: <50}|{1: <25} |{2: <25} | {3: >3}\n".format(self.base_dir, album_title, album_artist, music_files_count)
 
     def get_music_files_count(self):
@@ -66,25 +67,24 @@ class Dir:
                 album_artist = audio["albumartist"][0]
             except KeyError:
                 album_artist = ""
-            if album_artist == "":
-                continue
-            if album_artist not in cos:
-                cos[album_artist] = 0
-            cos[album_artist] += 1
-            if selected_album_artist[0] < cos[album_artist]:
-                selected_album_artist = [cos[album_artist], album_artist]
-            elif selected_album_artist[0] == cos[album_artist]:
-                selected_album_artist += [album_artist]
-            if album_title == "":
-                continue
-            if album_title not in cos:
-                cos[album_title] = 0
-            cos[album_title] += 1
-            if selected_album_title[0] < cos[album_title]:
-                selected_album_title = [cos[album_title], album_title]
-            elif selected_album_title[0] == cos[album_title]:
-                selected_album_title += [album_title]
-        print(selected_album_artist[1:] if selected_album_artist[0] else None)
-        print(selected_album_title[1:] if selected_album_title[0] else None)
-        tags = {"album_title": album_title, "album_artist": album_artist}
-        return tags
+
+            if album_artist != "":
+                if album_artist not in cos:
+                    cos[album_artist] = 0
+                cos[album_artist] += 1
+                if selected_album_artist[0] < cos[album_artist]:
+                    selected_album_artist = [cos[album_artist], album_artist]
+                elif selected_album_artist[0] == cos[album_artist]:
+                    selected_album_artist += [album_artist]
+
+            if album_title != "":
+                if album_title not in cos:
+                    cos[album_title] = 0
+                cos[album_title] += 1
+                if selected_album_title[0] < cos[album_title]:
+                    selected_album_title = [cos[album_title], album_title]
+                elif selected_album_title[0] == cos[album_title]:
+                    selected_album_title += [album_title]
+        r1 = (selected_album_artist[1:] if selected_album_artist[0] else None)
+        r2 = (selected_album_title[1:] if selected_album_title[0] else None)
+        return {"album_artist": r1, "album_title": r2}
