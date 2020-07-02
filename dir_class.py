@@ -30,7 +30,7 @@ class Dir:
         tags = self.get_tags()
         print(tags)
         album_title = str(tags["album_title"][0]) if len(tags["album_title"]) == 1 else "Wiele"
-        album_artist = str(tags["album_artist"][0]) if len(tags["album_title"]) == 1 else "Wiele"
+        album_artist = str(tags["album_artist"][0]) if len(tags["album_artist"]) == 1 else "Wiele"
         return " - | {0: <50}|{1: <25} |{2: <25} | {3: >3}\n".format(self.base_dir, album_title, album_artist, music_files_count)
 
     def get_music_files_count(self):
