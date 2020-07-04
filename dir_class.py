@@ -94,3 +94,12 @@ class Dir:
         audio["album"] = album_title
         audio["albumartist"] = album_artist
         audio.save()
+
+    def edit(self):
+        self.data_about_files()
+
+    def data_about_files(self):
+        for x, y, z in self.base_dir:
+            for f in z:
+                file_path = x + os.sep + y + os.sep + z + os.sep + f
+                print(file_path)
