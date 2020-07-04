@@ -30,8 +30,10 @@ def files_processing(file_path, destination_dir):
             cos_dir = dir_class.Dir(ln[1])
             if ln[0] == "u":
                 cos_dir.delete()
-            elif ln[0] == "p":
+            if ln[0] == "p":
                 cos_dir.move(destination_dir, ln[3], ln[2])
+            elif ln[0] == "e":
+                cos_dir.edit()
     os.remove(file_path)
 
 
