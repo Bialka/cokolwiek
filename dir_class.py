@@ -99,7 +99,9 @@ class Dir:
         self.data_about_files()
 
     def data_about_files(self):
-        for x, y, z in self.base_dir:
-            for f in z:
-                file_path = x + os.sep + y + os.sep + z + os.sep + f
-                print(file_path)
+        for item in os.listdir(self.base_dir):
+            print(item)
+            audio = EasyID3(item)
+            audio["title"] = file_title
+            audio["tracknumber"] = file_tracknumber
+            audio.save()
