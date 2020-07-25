@@ -100,8 +100,15 @@ class Dir:
 
     def data_about_files(self):
         for item in os.listdir(self.base_dir):
-            print(item)
-            audio = EasyID3(item)
-            audio["title"] = file_title
-            audio["tracknumber"] = file_tracknumber
-            audio.save()
+            if self.is_music_file(item):
+                audio = EasyID3(os.path.join(self.base_dir, item))
+                file_title = audio["title"]
+                file_tracknumber = audio["tracknumber"]
+                file_artist = audio["artist"]
+                file_album = audio["album"]
+                album_artist = audio["albumartist"]
+                year = audio["date"]
+                audio.save()
+            files_data = {"file_title": file_title, "file_tracknumber": file_tracknumber, "file_artist": file_artist, "file_album": file_album,
+                      "album_artist": album_artist, "year": year}
+        return files_data
