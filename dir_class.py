@@ -96,7 +96,21 @@ class Dir:
         audio.save()
 
     def edit(self):
-        self.data_about_files()
+        tags = self.data_about_files()
+        for key, value in tags:
+            print(key, value)
+           # file_path = value
+            #file_tracknumber = value
+           # file_title = value
+           # file_artist = value
+           # file_album = value
+           # album_artist = value
+           # year = value
+        with open("dane_plikow.txt", "w") as f:
+            f.write("- | {0: <50}|{1: <25} |{2: <25} | {3: <25}|{4: <25}|{5: <25}|{6: <25}\n".format( #file_path,
+            # file_tracknumber, file_title, file_artist, file_album, album_artist, year
+            ))
+
 
     def data_about_files(self):
         files_data = []
@@ -109,8 +123,7 @@ class Dir:
                 file_album = audio["album"]
                 album_artist = audio["albumartist"]
                 year = audio["date"]
-                audio.save()
-                file_path = os.path.join(self.base_dir, item)
+                file_path = [os.path.join(self.base_dir, item)]
                 tags = {"file_title": file_title, "file_tracknumber": file_tracknumber, "file_artist": file_artist, "file_album": file_album,
                       "album_artist": album_artist, "year": year, "file_path": file_path}
             files_data += tags.items()
