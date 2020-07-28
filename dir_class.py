@@ -99,17 +99,16 @@ class Dir:
         tags = self.data_about_files()
         for key, value in tags:
             print(key, value)
-           # file_path = value
-            #file_tracknumber = value
-           # file_title = value
-           # file_artist = value
-           # file_album = value
-           # album_artist = value
-           # year = value
+            file_path = str(value)
+            file_tracknumber = str(value)
+            file_title = str(value)
+            file_artist = str(value)
+            file_album = str(value)
+            album_artist = str(value)
+            year = str(value)
         with open("dane_plikow.txt", "w") as f:
-            f.write("- | {0: <50}|{1: <25} |{2: <25} | {3: <25}|{4: <25}|{5: <25}|{6: <25}\n".format( #file_path,
-            # file_tracknumber, file_title, file_artist, file_album, album_artist, year
-            ))
+            f.write("- | {0: <50}|{1: <25} |{2: <25} | {3: <25}|{4: <25}|{5: <25}|{6: <25}\n".format( file_path,
+            file_tracknumber, file_title, file_artist, file_album, album_artist, year))
 
 
     def data_about_files(self):
