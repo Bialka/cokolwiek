@@ -97,18 +97,17 @@ class Dir:
 
     def edit(self):
         tags = self.data_about_files()
-        for key, value in tags:
-            print(key, value)
-            file_path = str(value)
-            file_tracknumber = str(value)
-            file_title = str(value)
-            file_artist = str(value)
-            file_album = str(value)
-            album_artist = str(value)
-            year = str(value)
         with open("dane_plikow.txt", "w") as f:
-            f.write("- | {0: <50}|{1: <25} |{2: <25} | {3: <25}|{4: <25}|{5: <25}|{6: <25}\n".format( file_path,
-            file_tracknumber, file_title, file_artist, file_album, album_artist, year))
+            for value in tags:
+                file_path = value["file_path"][0] if value.get("file_path", False) else "-"
+                file_tracknumber = value["file_tracknumber"][0] if value.get("file_tracknumber", False) else "-"
+                file_title = value["file_title"][0] if value.get("file_title", False) else "-"
+                file_artist = value["file_artist"][0] if value.get("file_artist", False) else "-"
+                file_album = value["file_album"][0] if value.get("file_album", False) else "-"
+                album_artist = value["file_artist"][0] if value.get("file_artist", False) else "-"
+                year = value["year"][0] if value.get("year", False) else "-"
+                f.write("- | {0: <50}|{1: <25} |{2: <25} | {3: <25}|{4: <25}|{5: <25}|{6: <25}\n".format( file_path,
+                file_tracknumber, file_title, file_artist, file_album, album_artist, year))
 
 
     def data_about_files(self):
@@ -125,6 +124,5 @@ class Dir:
                 file_path = [os.path.join(self.base_dir, item)]
                 tags = {"file_title": file_title, "file_tracknumber": file_tracknumber, "file_artist": file_artist, "file_album": file_album,
                       "album_artist": album_artist, "year": year, "file_path": file_path}
-            files_data += tags.items()
-        print(files_data)
+                files_data.append(tags)
         return files_data
