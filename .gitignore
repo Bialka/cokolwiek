@@ -6,3 +6,5 @@ zrobione/*
 do_zrobienia/*
 backup/*
 *.pyc
+dane_plikow.txt
+venv/*
