@@ -148,6 +148,13 @@ class Dir:
                 if action == "-":
                     pass
                 elif action == "e":
-                    print("edycja", file_path)
+                    audio = EasyID3(file_path)
+                    audio["title"] = file_title
+                    audio["tracknumber"] = file_tracknumber
+                    audio["artist"] = file_artist
+                    audio["album"] = file_album
+                    audio["albumartist"] = album_artist
+                    audio["date"] = file_year
+                    audio.save()
                 elif action == "u":
-                    print("sru", file_path)
+                    os.remove(file_path)
