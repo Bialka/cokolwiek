@@ -34,6 +34,7 @@ def files_processing(file_path, destination_dir):
                 cos_dir.move(destination_dir, ln[3], ln[2])
             elif ln[0] == "e":
                 cos_dir.edit()
+                cos_dir.move(destination_dir, ln[3], ln[2])
     os.remove(file_path)
 
 
