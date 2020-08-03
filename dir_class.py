@@ -1,9 +1,9 @@
-
 import os
-
 import shutil
+import subprocess
 
 from mutagen.easyid3 import EasyID3
+
 
 class Dir:
     def __init__(self, base_dir):
@@ -96,8 +96,10 @@ class Dir:
         audio.save()
 
     def edit(self):
+        file_name = "dane_plikow.txt"
         tags = self.data_about_files()
-        with open("dane_plikow.txt", "w") as f:
+        # todo: przenieś zapisywanie pliku do oddzielnej funkcji
+        with open(file_name, "w") as f:
             for value in tags:
                 file_path = value["file_path"][0] if value.get("file_path", False) else "-"
                 file_tracknumber = value["file_tracknumber"][0] if value.get("file_tracknumber", False) else "-"
@@ -107,8 +109,9 @@ class Dir:
                 album_artist = value["file_artist"][0] if value.get("file_artist", False) else "-"
                 year = value["year"][0] if value.get("year", False) else "-"
                 f.write("- | {0: <50}|{1: <25} |{2: <25} | {3: <25}|{4: <25}|{5: <25}|{6: <25}\n".format( file_path,
-                file_tracknumber, file_title, file_artist, file_album, album_artist, year))
-
+                                                                                                          file_tracknumber, file_title, file_artist, file_album, album_artist, year))
+        subprocess.call(["notepad", file_name])
+        self.reading_data_from_text_file(file_name)
 
     def data_about_files(self):
         files_data = []
@@ -123,6 +126,28 @@ class Dir:
                 year = audio["date"]
                 file_path = [os.path.join(self.base_dir, item)]
                 tags = {"file_title": file_title, "file_tracknumber": file_tracknumber, "file_artist": file_artist, "file_album": file_album,
-                      "album_artist": album_artist, "year": year, "file_path": file_path}
+                        "album_artist": album_artist, "year": year, "file_path": file_path}
                 files_data.append(tags)
         return files_data
+
+    def reading_data_from_text_file(self, file_name):
+        with open(file_name, "r") as f:
+            x = f.read()
+            for line in x.split("\n"):
+                if line == "":
+                    continue
+                line_elements = line.split("|")
+                action = line_elements[0].strip()
+                file_path = line_elements[1].strip()
+                file_tracknumber = line_elements[2].strip()
+                file_title = line_elements[3].strip()
+                file_artist = line_elements[4].strip()
+                file_album = line_elements[5].strip()
+                album_artist = line_elements[6].strip()
+                file_year = line_elements[7].strip()
+                if action == "-":
+                    pass
+                elif action == "e":
+                    print("edycja", file_path)
+                elif action == "u":
+                    print("sru", file_path)
