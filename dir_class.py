@@ -117,7 +117,7 @@ class Dir:
                 year = value["year"][0] if value.get("year", False) else "-"
                 f.write("- | {0: <50}|{1: <25} |{2: <25} | {3: <25}|{4: <25}|{5: <25}|{6: <25}\n".format( file_path,
                                                                                                           file_tracknumber, file_title, file_artist, file_album, album_artist, year))
-        subprocess.call(["notepad", file_name])
+        subprocess.call(["gedit", file_name])
         self.reading_data_from_text_file(file_name)
 
     def data_about_files(self):
