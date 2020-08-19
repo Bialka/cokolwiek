@@ -27,8 +27,14 @@ class Dir:
     def get_control_string(self):
         music_files_count = self.get_music_files_count()
         tags = self.get_tags()
-        album_title = str(tags["album_title"][0]) if len(tags["album_title"]) == 1 else "Wiele"
-        album_artist = str(tags["album_artist"][0]) if len(tags["album_artist"]) == 1 else "Wiele"
+        if tags["album_title"]:
+            album_title = str(tags["album_title"][0]) if len(tags["album_title"]) == 1 else "Wiele"
+        else:
+            album_title = "-"
+        if tags["album_artist"]:
+            album_artist = str(tags["album_artist"][0]) if len(tags["album_artist"]) == 1 else "Wiele"
+        else:
+            album_artist = "-"
         return " - | {0: <50}|{1: <25} |{2: <25} | {3: >3}\n".format(self.base_dir, album_title, album_artist, music_files_count)
 
     def get_music_files_count(self):
@@ -39,7 +45,7 @@ class Dir:
         os.makedirs(destination_pth, exist_ok=True)
         for x, y, z in os.walk(self.base_dir):
             for f in z:
-                self.new_file_name(f)
+                self.get_new_file_name(f)
                 source_pth = x + os.sep + f
                 shutil.move(source_pth, destination_pth)
                 if self.is_music_file(f):
@@ -160,15 +166,14 @@ class Dir:
                 elif action == "u":
                     os.remove(file_path)
 
-    def new_file_name(self, file_name):
+    def get_new_file_name(self, file_name):
         file_path = self.base_dir + os.sep + file_name
         audio = EasyID3(file_path)
         file_title = audio["title"]
         if audio["title"] == "":
-            file_title = "-"
+            pass
         file_tracknumber = audio["tracknumber"]
         if audio["tracknumber"] == "":
-            file_tracknumber = "-"
-        audio.save()
-        new_file_name = file_tracknumber + file_title
+            pass
+        new_file_name = f"{file_tracknumber} - {file_title}.mp3"
         return new_file_name
