@@ -45,12 +45,16 @@ class Dir:
         os.makedirs(destination_pth, exist_ok=True)
         for x, y, z in os.walk(self.base_dir):
             for f in z:
-                new_file_name = self.get_new_file_name(f)
-                if new_file_name is not None:
+                if self.is_music_file(f):
+                    new_file_name = self.get_new_file_name(f)
+                    if new_file_name is None:
+                        continue
                     source_pth = x + os.sep + new_file_name
                     shutil.move(source_pth, destination_pth)
-                    if self.is_music_file(f):
-                        self.update_tags(album_artist, album_title, destination_pth + os.sep + new_file_name)
+                    self.update_tags(album_artist, album_title, destination_pth + os.sep + new_file_name)
+                else:
+                    source_pth = x + os.sep + f
+                    shutil.move(source_pth, destination_pth)
             break
         shutil.rmtree(self.base_dir)
 
@@ -168,19 +172,13 @@ class Dir:
                     os.remove(file_path)
 
     def get_new_file_name(self, file_name):
-        if self.is_music_file(file_name):
-            file_path = self.base_dir + os.sep + file_name
-            audio = EasyID3(file_path)
-            if audio["title"] != "":
-                file_title = audio["title"]
-            else:
-                file_title = None
-            if audio["tracknumber"] != "":
-                file_tracknumber = audio["tracknumber"]
-            else:
-                file_tracknumber = None
-            if file_title or file_tracknumber == None:
-                new_file_name = None
-            else:
-                new_file_name = f"{file_tracknumber} - {file_title}.mp3"
-            return new_file_name
+        file_path = self.base_dir + os.sep + file_name
+        audio = EasyID3(file_path)
+        file_title = audio["title"]
+        if audio["title"] == "":
+            return None
+        file_tracknumber = audio["tracknumber"]
+        if audio["tracknumber"] == "":
+            return None
+        new_file_name = f"{file_tracknumber} - {file_title}.mp3"
+        return new_file_name
