@@ -49,7 +49,7 @@ class Dir:
                     new_file_name = self.get_new_file_name(f)
                     if new_file_name is None:
                         continue
-                    source_pth = x + os.sep + new_file_name
+                    source_pth = x + os.sep + f
                     shutil.move(source_pth, destination_pth + os.sep + new_file_name)
                     self.update_tags(album_artist, album_title, destination_pth + os.sep + new_file_name)
                 else:
