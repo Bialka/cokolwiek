@@ -50,11 +50,11 @@ class Dir:
                     if new_file_name is None:
                         continue
                     source_pth = x + os.sep + new_file_name
-                    shutil.move(source_pth, destination_pth)
+                    shutil.move(source_pth, destination_pth + os.sep + new_file_name)
                     self.update_tags(album_artist, album_title, destination_pth + os.sep + new_file_name)
                 else:
                     source_pth = x + os.sep + f
-                    shutil.move(source_pth, destination_pth)
+                    shutil.move(source_pth, destination_pth + os.sep + f)
             break
         shutil.rmtree(self.base_dir)
 
@@ -174,10 +174,10 @@ class Dir:
     def get_new_file_name(self, file_name):
         file_path = self.base_dir + os.sep + file_name
         audio = EasyID3(file_path)
-        file_title = audio["title"]
+        file_title = audio["title"][0]
         if audio["title"] == "":
             return None
-        file_tracknumber = audio["tracknumber"]
+        file_tracknumber = audio["tracknumber"][0]
         if audio["tracknumber"] == "":
             return None
         new_file_name = f"{file_tracknumber} - {file_title}.mp3"
