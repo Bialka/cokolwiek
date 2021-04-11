@@ -25,7 +25,10 @@ class MusicFile:
 
     def read_tags(self):
         audio = EasyID3(self.file_path)
-        self.tracknumber = int(audio["tracknumber"][0])  # TODO: konwertuj do int
+        try:
+            self.tracknumber = int(audio["tracknumber"][0])  # TODO: konwertuj do int
+        except ValueError:
+            pass
         self.title = audio["title"][0]
         self.artist = audio["artist"][0]
         try:
