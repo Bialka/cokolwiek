@@ -6,7 +6,7 @@ import os
 import classes
 
 
-def process_mp3(dir_path):
+def get_music_dirs(dir_path):
     music_dirs = []
     for dirpath, dirnames, filenames in os.walk(dir_path):
         if classes.MusicDir.is_music_dir(dirpath):
@@ -16,4 +16,4 @@ def process_mp3(dir_path):
 
 if __name__ == "__main__":
     dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData"
-    process_mp3(dir_path)
+    get_music_dirs(dir_path)
