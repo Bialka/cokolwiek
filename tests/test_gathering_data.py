@@ -47,3 +47,41 @@ class TestRecognisingMusic(unittest.TestCase):
             join(_test_data_dir, "Do Obróbki", "Castle Rock (Single)", "cover.jpg")))
         self.assertTrue(MusicFile.is_music_file(
             join(_test_data_dir, "Do Obróbki", "Castle Rock (Single)", "I don't exist.mp3")))
+
+
+class TestReadingMp3Tags(unittest.TestCase):
+
+    def test_happy_path(self):
+        from tags_handling import get_file_tags
+        # test on a file that has all required fields filled the right way
+        tags = get_file_tags(join(_test_data_dir, "Do Obróbki", "26-06-19", "Dolce Fine Giornata", "1. Fishermen.mp3"))
+        self.assertEqual(tags["tracknumber"], 1)
+        self.assertEqual(tags["title"], "Fishermen")
+        self.assertEqual(tags["artist"], "Daniel Bloom")
+        self.assertEqual(tags["album_artist"], "Daniel Bloom")
+        self.assertEqual(tags["album_title"], "Dolce Fine Giornata (feat. Leszek Możdżer)")
+        self.assertEqual(tags["year"], 2019)
+
+    def test_sad_paths(self):
+        from tags_handling import get_file_tags
+        # TODO: a file without any mp3 tags present
+        # a file without album artist
+        tags = get_file_tags(join(_test_data_dir, "Do Obróbki", "How to Train Your Dragon - The Hidden World",
+                                  "01. Raiders Return to Busy, Busy Berk.mp3"))
+        self.assertEqual(tags["tracknumber"], 1)
+        self.assertEqual(tags["title"], "Raiders Return to Busy, Busy Berk")
+        self.assertEqual(tags["artist"], "John Powell")
+        self.assertEqual(tags["album_artist"], None)
+        self.assertEqual(tags["album_title"], "How to Train Your Dragon: "
+                                              "The Hidden World (Original Motion Picture Soundtrack)")
+        self.assertEqual(tags["year"], 2019)
+        # a file with x/y tracknumber format
+
+        tags = get_file_tags(join(_test_data_dir, "Do Obróbki", "Castle Rock (Single)",
+                                  "01 Castle Rock (Main Theme) [From Castle Rock].mp3"))
+        self.assertEqual(tags["tracknumber"], 1)
+        self.assertEqual(tags["title"], "Castle Rock (Main Theme) [From \"Castle Rock\"]")
+        self.assertEqual(tags["artist"], "Thomas Newman")
+        self.assertEqual(tags["album_artist"], "Thomas Newman")
+        self.assertEqual(tags["album_title"], "Castle Rock (Main Theme) [From \"Castle Rock\"]")
+        self.assertEqual(tags["year"], 2018)
