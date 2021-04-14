@@ -8,3 +8,5 @@ backup/*
 *.pyc
 dane_plikow.txt
 venv/*
+
+tests/TestData/
