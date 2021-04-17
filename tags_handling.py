@@ -1,8 +1,7 @@
 from mutagen.easyid3 import EasyID3
 
 
-def tracknumber_tag(file_path):
-    audio = EasyID3(file_path)
+def tracknumber_tag(file_path, audio):
     if "tracknumber" in audio:
         tracknumber = int(audio["tracknumber"][0].split("/")[0])
     else:
@@ -10,8 +9,7 @@ def tracknumber_tag(file_path):
     return tracknumber
 
 
-def title_tag(file_path):
-    audio = EasyID3(file_path)
+def title_tag(file_path, audio):
     if "title" in audio:
         title = audio["title"][0]
     else:
@@ -19,8 +17,7 @@ def title_tag(file_path):
     return title
 
 
-def artist_tag(file_path):
-    audio = EasyID3(file_path)
+def artist_tag(file_path, audio):
     if "artist" in audio:
         artist = audio["artist"][0]
     else:
@@ -28,8 +25,7 @@ def artist_tag(file_path):
     return artist
 
 
-def album_artist_tag(file_path):
-    audio = EasyID3(file_path)
+def album_artist_tag(file_path, audio):
     if "albumartist" in audio:
         album_artist = audio["albumartist"][0]
     else:
@@ -37,8 +33,7 @@ def album_artist_tag(file_path):
     return album_artist
 
 
-def album_title_tag(file_path):
-    audio = EasyID3(file_path)
+def album_title_tag(file_path, audio):
     if "album" in audio:
         album_title = audio["album"][0]
     else:
@@ -46,8 +41,7 @@ def album_title_tag(file_path):
     return album_title
 
 
-def year_tag(file_path):
-    audio = EasyID3(file_path)
+def year_tag(file_path, audio):
     if "date" in audio:
         year = int(audio["date"][0].split("-")[0])
     else:
@@ -56,10 +50,11 @@ def year_tag(file_path):
 
 
 def get_file_tags(file_path):
-    tags = {"tracknumber": tracknumber_tag(file_path),
-            "title": title_tag(file_path),
-            "artist": artist_tag(file_path),
-            "album_artist": album_artist_tag(file_path),
-            "album_title": album_title_tag(file_path),
-            "year": year_tag(file_path)}
+    audio = EasyID3(file_path)
+    tags = {"tracknumber": tracknumber_tag(file_path,audio),
+            "title": title_tag(file_path, audio),
+            "artist": artist_tag(file_path, audio),
+            "album_artist": album_artist_tag(file_path, audio),
+            "album_title": album_title_tag(file_path, audio),
+            "year": year_tag(file_path, audio)}
     return tags
