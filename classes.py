@@ -1,7 +1,7 @@
 
 import os
 from os.path import join
-
+import tags_handling
 from mutagen.easyid3 import EasyID3
 
 
@@ -24,16 +24,8 @@ class MusicFile:
         return file_path.endswith(".mp3")
 
     def read_tags(self):
-        audio = EasyID3(self.file_path)
-        self.tracknumber = int(audio["tracknumber"][0].split("/")[0])  # TODO: konwertuj do int
-        self.title = audio["title"][0]
-        self.artist = audio["artist"][0]
-        try:
-            self.album_artist = audio["albumartist"][0]
-        except KeyError:
-            pass
-        self.album_title = audio["album"][0]
-        self.year = audio["date"][0]
+        for key, val in tags_handling.get_file_tags(self.file_path).items():
+            setattr(self, key, val)
 
 
 class MusicDir:
