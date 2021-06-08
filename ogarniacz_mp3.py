@@ -40,20 +40,16 @@ if __name__ == "__main__":
     dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData"
     get_music_dirs(dir_path)
     args = reading_arguments_from_terminal()
-    if args.p2o and args.o2w == True:
-        downloaded_to_processing()
-        processing_to_verification()
-        print("d")
-    elif args.p2o == True:
+    if args.p2o:
         downloaded_to_processing()
         print("a")
-    elif args.o2w == True:
+    if args.o2w:
         processing_to_verification()
         print("b")
-    elif args.w2g == True:
+    if args.w2g:
         verification_to_ready()
         print("c")
-    else:
+    if not args.o2w and args.p2o and args.w2g:
         downloaded_to_processing()
         processing_to_verification()
         verification_to_ready()
