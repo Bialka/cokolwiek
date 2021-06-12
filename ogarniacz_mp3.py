@@ -4,7 +4,7 @@
 import os
 import classes
 import argparse
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipfile
 
 
 def get_music_dirs(dir_path):
@@ -30,13 +30,15 @@ def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do ka
             if f.endswith(".zip"):
                 source_file_path = os.path.join(dir_path, f)
                 target_subdir_path = os.path.join(target_dir_path, f.replace(".zip", ""))
-                with ZipFile(source_file_path, "r") as zf:
-                    for info in zf.infolist():
-                        if classes.MusicFile.is_music_file(info.filename):
-                            print(info.filename)
-                            zf.extractall(target_subdir_path)
-                            break
-                os.remove(source_file_path)
+                try:
+                    with ZipFile(source_file_path, "r") as zf:
+                        for info in zf.infolist():
+                            if classes.MusicFile.is_music_file(info.filename):
+                                zf.extractall(target_subdir_path)
+                                break
+                    os.remove(source_file_path)
+                except BadZipfile:
+                    print(f"Plik {f} nie jest plikiem .zip.")
 
 
 def processing_to_verification():
