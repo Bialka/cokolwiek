@@ -42,15 +42,11 @@ if __name__ == "__main__":
     args = reading_arguments_from_terminal()
     if args.p2o:
         downloaded_to_processing()
-        print("a")
     if args.o2w:
         processing_to_verification()
-        print("b")
     if args.w2g:
         verification_to_ready()
-        print("c")
-    if not args.o2w and args.p2o and args.w2g:
+    if not (args.o2w or args.p2o or args.w2g):
         downloaded_to_processing()
         processing_to_verification()
         verification_to_ready()
-        print("e")
