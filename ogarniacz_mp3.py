@@ -31,7 +31,11 @@ def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do ka
                 source_file_path = os.path.join(dir_path, f)
                 target_subdir_path = os.path.join(target_dir_path, f.replace(".zip", ""))
                 with ZipFile(source_file_path, "r") as zf:
-                    zf.extractall(target_subdir_path)
+                    for info in zf.infolist():
+                        if classes.MusicFile.is_music_file(info.filename):
+                            print(info.filename)
+                            zf.extractall(target_subdir_path)
+                            break
                 os.remove(source_file_path)
 
 
