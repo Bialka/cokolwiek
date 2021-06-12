@@ -10,7 +10,7 @@ class Dir:
         self.base_dir = base_dir
         self.music_files = self.get_music_files()
 
-    def get_music_files(self):
+    def get_music_files(self):  # tworzy listę z plikami muzycznymi
         music_files = []
         for item in os.listdir(self.base_dir):
             pth = os.path.join(self.base_dir, item)
@@ -21,23 +21,17 @@ class Dir:
     def is_music_files_dir(self):
         return bool(self.music_files)
 
-    def is_music_file(self, pth):
+    def is_music_file(self, pth):   # sprawdza, czy plik jest plikiem mp3
         return pth.endswith(".mp3")
 
-    def get_control_string(self):
+    def get_control_string(self):   # tworzy plik kontrolny
         music_files_count = self.get_music_files_count()
         tags = self.get_tags()
-        if tags["album_title"]:
-            album_title = str(tags["album_title"][0]) if len(tags["album_title"]) == 1 else "Wiele"
-        else:
-            album_title = "-"
-        if tags["album_artist"]:
-            album_artist = str(tags["album_artist"][0]) if len(tags["album_artist"]) == 1 else "Wiele"
-        else:
-            album_artist = "-"
+        album_title = str(tags["album_title"][0]) if len(tags["album_title"]) == 1 else "Wiele"
+        album_artist = str(tags["album_artist"][0]) if len(tags["album_artist"]) == 1 else "Wiele"
         return " - | {0: <50}|{1: <25} |{2: <25} | {3: >3}\n".format(self.base_dir, album_title, album_artist, music_files_count)
 
-    def get_music_files_count(self):
+    def get_music_files_count(self):    # liczy ilość plików
         return len(self.music_files)
 
     def move(self, destination_dir, album_artist, album_title):
@@ -45,16 +39,10 @@ class Dir:
         os.makedirs(destination_pth, exist_ok=True)
         for x, y, z in os.walk(self.base_dir):
             for f in z:
+                source_pth = x + os.sep + f
+                shutil.move(source_pth, destination_pth)
                 if self.is_music_file(f):
-                    new_file_name = self.get_new_file_name(f)
-                    if new_file_name is None:
-                        continue
-                    source_pth = x + os.sep + f
-                    shutil.move(source_pth, destination_pth + os.sep + new_file_name)
-                    self.update_tags(album_artist, album_title, destination_pth + os.sep + new_file_name)
-                else:
-                    source_pth = x + os.sep + f
-                    shutil.move(source_pth, destination_pth + os.sep + f)
+                    self.update_tags(album_artist, album_title, destination_pth + os.sep + f)
             break
         shutil.rmtree(self.base_dir)
 
@@ -122,7 +110,7 @@ class Dir:
                 year = value["year"][0] if value.get("year", False) else "-"
                 f.write("- | {0: <50}|{1: <25} |{2: <25} | {3: <25}|{4: <25}|{5: <25}|{6: <25}\n".format( file_path,
                                                                                                           file_tracknumber, file_title, file_artist, file_album, album_artist, year))
-        subprocess.call(["gedit", file_name])
+        subprocess.call(["notepad", file_name])
         self.reading_data_from_text_file(file_name)
 
     def data_about_files(self):
@@ -171,14 +159,3 @@ class Dir:
                 elif action == "u":
                     os.remove(file_path)
 
-    def get_new_file_name(self, file_name):
-        file_path = self.base_dir + os.sep + file_name
-        audio = EasyID3(file_path)
-        file_title = audio["title"][0]
-        if audio["title"] == "":
-            return None
-        file_tracknumber = audio["tracknumber"][0]
-        if audio["tracknumber"] == "":
-            return None
-        new_file_name = f"{file_tracknumber} - {file_title}.mp3"
-        return new_file_name
