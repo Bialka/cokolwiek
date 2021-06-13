@@ -3,6 +3,7 @@ import os
 from os.path import join
 import tags_handling
 from mutagen.easyid3 import EasyID3
+import mimetypes
 
 
 class MusicFile:
@@ -21,7 +22,7 @@ class MusicFile:
 
     @classmethod
     def is_music_file(cls, file_path):
-        return file_path.endswith(".mp3")
+        return mimetypes.guess_type(file_path)[0].startswith("audio/")
 
     def read_tags(self):
         for key, val in tags_handling.get_file_tags(self.file_path).items():
