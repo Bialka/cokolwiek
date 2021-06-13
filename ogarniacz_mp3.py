@@ -54,6 +54,23 @@ def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do ka
                     print(f"Plik {f} nie jest plikiem .zip.")
 
 
+def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do kat jako argument, znaleźć w kat wszystkie pliki .zip, rozpakować je do kat "do obróbki"
+    for dir_path, sub_dirs, files in os.walk(source_dir_path):
+        for f in files:
+            if f.endswith(".zip"):
+                source_file_path = os.path.join(dir_path, f)
+                target_subdir_path = os.path.join(target_dir_path, f.replace(".zip", ""))
+                try:
+                    with ZipFile(source_file_path, "r") as zf:
+                        for info in zf.infolist():
+                            if classes.MusicFile.is_music_file(info.filename):
+                                zf.extractall(target_subdir_path)
+                                break
+                    os.remove(source_file_path)
+                except BadZipfile:
+                    print(f"Plik {f} nie jest plikiem .zip.")
+
+                    
 def processing_to_verification(processing_dir_path):
     # 1. przeprocesowanie plików z kat procecessing:
     # a) pozbyć się duplikatów
