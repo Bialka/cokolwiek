@@ -5,6 +5,7 @@ import os
 import classes
 import argparse
 from zipfile import ZipFile, BadZipfile
+import re
 
 
 def get_music_dirs(dir_path):
@@ -23,6 +24,18 @@ def reading_arguments_from_terminal():
     args = parser.parse_args()
     return args
 
+def split_file_name(file_name):
+    name = re.sub(r'\.[^.]+?$', "", file_name)
+    ext = file_name.replace(name, "").lstrip(".")
+    return name, ext
+
+
+def get_format_preference_index(ext):
+    format_preference = ["mp3", "mp4", "ogg", "flac"]
+    try:
+        return format_preference.index(ext)
+    except ValueError:
+        return len(format_preference)
 
 def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do kat jako argument, znaleźć w kat wszystkie pliki .zip, rozpakować je do kat "do obróbki"
     for dir_path, sub_dirs, files in os.walk(source_dir_path):
@@ -41,7 +54,31 @@ def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do ka
                     print(f"Plik {f} nie jest plikiem .zip.")
 
 
-def processing_to_verification():
+def processing_to_verification(processing_dir_path):
+    # 1. przeprocesowanie plików z kat procecessing:
+    # a) pozbyć się duplikatów
+    for dir_path, sub_dirs, files in os.walk(processing_dir_path):
+        for file_name in files:
+            file_path = os.path.join(dir_path, file_name)
+            if classes.MusicFile.is_music_file(file_path):
+                name, ext = split_file_name(file_name)
+                for another_file_name in files:
+                    if file_name == another_file_name:
+                        continue
+                    another_name, another_ext = split_file_name(another_file_name)
+                    if name == another_name:
+                        if get_format_preference_index(ext) >= get_format_preference_index(another_ext):
+                            try:
+                                os.remove(file_path)
+                            except FileNotFoundError:
+                                continue # skoro tego pliku nie ma, to nie ma co tutaj robić
+
+    # b) przekonwertować nie mp3 na mp3
+    # c) dostosować bitrate'y tam, gdzie to konieczne
+    # d) dostosować poziom głośności
+    # e) znormalizować tagi
+    # f) pozbyć się zbędnych tagów
+    # 2. przeniesienie ich do verification
     pass
 
 
@@ -52,16 +89,16 @@ def verification_to_ready():
 if __name__ == "__main__":
     dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData"
     from_dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData/Pobrane"
-    final_dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData/Do Obróbki"
+    processing_dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData/Do Obróbki"
     #get_music_dirs(dir_path)
     args = reading_arguments_from_terminal()
     if args.p2o:
-        downloaded_to_processing(from_dir_path, final_dir_path)
+        downloaded_to_processing(from_dir_path, processing_dir_path)
     if args.o2w:
-        processing_to_verification()
+        processing_to_verification(processing_dir_path)
     if args.w2g:
         verification_to_ready()
     if not (args.o2w or args.p2o or args.w2g):
-        downloaded_to_processing()
-        processing_to_verification()
+        downloaded_to_processing(from_dir_path, processing_dir_path)
+        processing_to_verification(processing_dir_path)
         verification_to_ready()
