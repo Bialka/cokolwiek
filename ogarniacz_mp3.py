@@ -6,6 +6,7 @@ import classes
 import argparse
 from zipfile import ZipFile, BadZipfile
 import re
+import shutil
 
 
 def get_music_dirs(dir_path):
@@ -54,11 +55,16 @@ def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do ka
                     print(f"Plik {f} nie jest plikiem .zip.")
 
                     
-def processing_to_verification(processing_dir_path):
+def processing_to_verification(processing_dir_path, verification_dir_path):
     # 1. przeprocesowanie plików z kat procecessing:
     # a) pozbyć się duplikatów
     for dir_path, sub_dirs, files in os.walk(processing_dir_path):
+        #destination_pth = verification_dir_path + os.sep + sub_dirs
         for file_name in files:
+            print(sub_dirs)
+            destination_pth = os.path.join(verification_dir_path, sub_dirs[0], file_name)
+            os.makedirs(destination_pth)
+            #print(destination_pth)
             file_path = os.path.join(dir_path, file_name)
             if classes.MusicFile.is_music_file(file_path):
                 name, ext = split_file_name(file_name)
@@ -72,14 +78,18 @@ def processing_to_verification(processing_dir_path):
                                 os.remove(file_path)
                             except FileNotFoundError:
                                 continue # skoro tego pliku nie ma, to nie ma co tutaj robić
-
-    # b) przekonwertować nie mp3 na mp3
-    # c) dostosować bitrate'y tam, gdzie to konieczne
-    # d) dostosować poziom głośności
-    # e) znormalizować tagi
-    # f) pozbyć się zbędnych tagów
-    # 2. przeniesienie ich do verification
-    pass
+                            # b) przekonwertować nie mp3 na mp3
+                            if ext != "mp3":
+                                pass
+                            # c) dostosować bitrate'y tam, gdzie to konieczne
+                            # d) dostosować poziom głośności
+                            # e) znormalizować tagi
+                            # f) pozbyć się zbędnych tagów
+                            # 2. przeniesienie ich do verification
+                            try:
+                                shutil.move(file_path, destination_pth)
+                            except FileNotFoundError:
+                                continue #jeśli pliku nie ma, to nie można go przenieść
 
 
 def verification_to_ready():
@@ -90,15 +100,16 @@ if __name__ == "__main__":
     dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData"
     from_dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData/Pobrane"
     processing_dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData/Do Obróbki"
+    verification_dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData/Weryfikacja"
     #get_music_dirs(dir_path)
     args = reading_arguments_from_terminal()
     if args.p2o:
         downloaded_to_processing(from_dir_path, processing_dir_path)
     if args.o2w:
-        processing_to_verification(processing_dir_path)
+        processing_to_verification(processing_dir_path, verification_dir_path)
     if args.w2g:
         verification_to_ready()
     if not (args.o2w or args.p2o or args.w2g):
         downloaded_to_processing(from_dir_path, processing_dir_path)
-        processing_to_verification(processing_dir_path)
+        processing_to_verification(processing_dir_path, verification_dir_path)
         verification_to_ready()
