@@ -59,12 +59,7 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
     # 1. przeprocesowanie plików z kat procecessing:
     # a) pozbyć się duplikatów
     for dir_path, sub_dirs, files in os.walk(processing_dir_path):
-        #destination_pth = verification_dir_path + os.sep + sub_dirs
         for file_name in files:
-            print(sub_dirs)
-            destination_pth = os.path.join(verification_dir_path, sub_dirs[0], file_name)
-            os.makedirs(destination_pth)
-            #print(destination_pth)
             file_path = os.path.join(dir_path, file_name)
             if classes.MusicFile.is_music_file(file_path):
                 name, ext = split_file_name(file_name)
@@ -86,10 +81,16 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
                             # e) znormalizować tagi
                             # f) pozbyć się zbędnych tagów
                             # 2. przeniesienie ich do verification
-                            try:
-                                shutil.move(file_path, destination_pth)
-                            except FileNotFoundError:
-                                continue #jeśli pliku nie ma, to nie można go przenieść
+                    for dir_path, sub_dirs, files in os.walk(processing_dir_path, topdown=False):
+                        dir_name = os.path.basename(dir_path)
+                        print(dir_name)
+                        current_pth = os.path.join(processing_dir_path, dir_name)
+                        destination_pth = os.path.join(verification_dir_path, dir_name)
+                        os.makedirs(destination_pth, exist_ok=True)
+                        try:
+                            shutil.move(current_pth, destination_pth)
+                        except FileNotFoundError:
+                            continue #jeśli pliku nie ma, to nie można go przenieść
 
 
 def verification_to_ready():
