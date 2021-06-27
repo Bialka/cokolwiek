@@ -74,8 +74,6 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
                             except FileNotFoundError:
                                 continue # skoro tego pliku nie ma, to nie ma co tutaj robić
     # b) przekonwertować nie mp3 na mp3
-       # if ext != "mp3":
-            pass
     # c) dostosować bitrate'y tam, gdzie to konieczne
     # d) dostosować poziom głośności
     # e) znormalizować tagi
@@ -85,10 +83,7 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
         if classes.MusicDir.is_music_dir(dir_path):
             dir_name = os.path.basename(dir_path)
             destination_pth = os.path.join(verification_dir_path, dir_name)
-            try:
-                shutil.move(dir_path, destination_pth)
-            except FileNotFoundError:
-                continue #jeśli pliku nie ma, to nie można go przenieść
+            shutil.move(dir_path, destination_pth)
 
 
 def verification_to_ready():
