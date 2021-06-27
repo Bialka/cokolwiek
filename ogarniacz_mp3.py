@@ -82,15 +82,11 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
     # f) pozbyć się zbędnych tagów
     # 2. przeniesienie ich do verification
     for dir_path, sub_dirs, files in os.walk(processing_dir_path, topdown=False):
-        print(dir_path)
         if classes.MusicDir.is_music_dir(dir_path):
             dir_name = os.path.basename(dir_path)
-            print(dir_name)
-            current_pth = os.path.join(processing_dir_path, dir_name)
             destination_pth = os.path.join(verification_dir_path, dir_name)
-            #os.makedirs(destination_pth, exist_ok=True)
             try:
-                shutil.move(current_pth, destination_pth)
+                shutil.move(dir_path, destination_pth)
             except FileNotFoundError:
                 continue #jeśli pliku nie ma, to nie można go przenieść
 
