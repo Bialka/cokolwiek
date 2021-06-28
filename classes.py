@@ -22,7 +22,7 @@ class MusicFile:
 
     @classmethod
     def is_music_file(cls, file_path):
-        return mimetypes.guess_type(file_path)[0].startswith("audio/")
+        return (mimetypes.guess_type(file_path)[0] or '').startswith("audio/")
 
     def read_tags(self):
         for key, val in tags_handling.get_file_tags(self.file_path).items():
