@@ -7,6 +7,7 @@ import argparse
 from zipfile import ZipFile, BadZipfile
 import re
 import shutil
+import subprocess
 
 
 def get_music_dirs(dir_path):
@@ -37,6 +38,20 @@ def get_format_preference_index(ext):
         return format_preference.index(ext)
     except ValueError:
         return len(format_preference)
+
+
+def convert_to_mp3(processing_dir_path):
+    for dir_path, sub_dirs, files in os.walk(processing_dir_path):
+        for file_name in files:
+            file_path = os.path.join(dir_path, file_name)
+            if classes.MusicFile.is_music_file(file_path):
+                name, ext = split_file_name(file_name)
+                if ext != "mp3":
+                    input_path = file_path
+                    output_path = os.path.join(dir_path, name + ".mp3")
+                    subprocess.call(["ffmpeg", "-i", input_path, "-vn", "-ar", 44100, "-ac", 2, "-b:a", 142000, output_path],
+                    stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+
 
 def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do kat jako argument, znaleźć w kat wszystkie pliki .zip, rozpakować je do kat "do obróbki"
     for dir_path, sub_dirs, files in os.walk(source_dir_path):
@@ -69,11 +84,13 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
                     another_name, another_ext = split_file_name(another_file_name)
                     if name == another_name:
                         if get_format_preference_index(ext) >= get_format_preference_index(another_ext):
-                            try:
-                                os.remove(file_path)
-                            except FileNotFoundError:
-                                continue # skoro tego pliku nie ma, to nie ma co tutaj robić
+                            pass
+                            #try:
+                                # os.remove(file_path)
+                            #except FileNotFoundError:
+                             #   continue # skoro tego pliku nie ma, to nie ma co tutaj robić
     # b) przekonwertować nie mp3 na mp3
+    convert_to_mp3(processing_dir_path)
     # c) dostosować bitrate'y tam, gdzie to konieczne
     # d) dostosować poziom głośności
     # e) znormalizować tagi
@@ -83,7 +100,7 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
         if classes.MusicDir.is_music_dir(dir_path):
             dir_name = os.path.basename(dir_path)
             destination_pth = os.path.join(verification_dir_path, dir_name)
-            shutil.move(dir_path, destination_pth)
+            #shutil.move(dir_path, destination_pth)
 
 
 def verification_to_ready():
