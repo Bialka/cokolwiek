@@ -8,7 +8,6 @@ from zipfile import ZipFile, BadZipfile
 import re
 import shutil
 import subprocess
-from sys import stderr
 
 
 def get_music_dirs(dir_path):
@@ -91,10 +90,10 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
                     if name == another_name:
                         if get_format_preference_index(ext) >= get_format_preference_index(another_ext):
                             pass
-                            #try:
-                                # os.remove(file_path)
-                            #except FileNotFoundError:
-                             #   continue # skoro tego pliku nie ma, to nie ma co tutaj robić
+                            try:
+                                 os.remove(file_path)
+                            except FileNotFoundError:
+                                continue # skoro tego pliku nie ma, to nie ma co tutaj robić
     # b) przekonwertować nie mp3 na mp3
     convert_to_mp3(processing_dir_path)
     # c) dostosować bitrate'y tam, gdzie to konieczne
@@ -106,7 +105,7 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
         if classes.MusicDir.is_music_dir(dir_path):
             dir_name = os.path.basename(dir_path)
             destination_pth = os.path.join(verification_dir_path, dir_name)
-            #shutil.move(dir_path, destination_pth)
+            shutil.move(dir_path, destination_pth)
 
 
 def verification_to_ready():
