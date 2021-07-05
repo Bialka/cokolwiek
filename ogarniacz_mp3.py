@@ -8,7 +8,7 @@ from zipfile import ZipFile, BadZipfile
 import re
 import shutil
 import subprocess
-import asyncio
+from sys import stderr
 
 
 def get_music_dirs(dir_path):
@@ -50,9 +50,13 @@ def convert_to_mp3(processing_dir_path):
                 if ext != "mp3":
                     input_path = file_path
                     output_path = os.path.join(dir_path, name + ".mp3")
-                    subprocess.call(["ffmpeg", "-i", input_path, "-vn", "-ar", 44100, "-ac", 2, "-b:a", 142000, output_path],
-                    stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-                    os.remove(file_path)
+                    proc = subprocess.run(["ffmpeg", "-i", input_path, "-vn", "-ar", "44100", "-ac", "2", "-b:a", "142000",
+                                     output_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                    if proc.returncode == 0:
+                        os.remove(file_path)
+                    else:
+                        print(proc.stderr.decode())
 
 
 def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do kat jako argument, znaleźć w kat wszystkie pliki .zip, rozpakować je do kat "do obróbki"
