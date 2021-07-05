@@ -57,7 +57,8 @@ class TestProcessingFiles(unittest.TestCase):
 
     def test_converting_to_mp3(self):
         # run mp3 conversion
-        ogarniacz_mp3.convert_to_mp3(processing_dir)
+        _1917_dir = join(processing_dir, "1917FYC", "1917 (FYC)")
+        ogarniacz_mp3.convert_to_mp3(_1917_dir)
         file_path = join(processing_dir, "1917FYC/1917 (FYC)/02. Trench to Yorks")
         # make sure the original file was deleted
         self.assertFalse(isfile(file_path + ".flac"))
