@@ -47,9 +47,8 @@ def convert_to_mp3(processing_dir_path):
             if classes.MusicFile.is_music_file(file_path):
                 name, ext = split_file_name(file_name)
                 if ext != "mp3":
-                    input_path = file_path
                     output_path = os.path.join(dir_path, name + ".mp3")
-                    proc = subprocess.run(["ffmpeg", "-i", input_path, "-vn", "-ar", "44100", "-ac", "2", "-b:a", "142000",
+                    proc = subprocess.run(["ffmpeg", "-i", file_path, "-vn", "-ar", "44100", "-ac", "2", "-b:a", "142000",
                                      output_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                     if proc.returncode == 0:
