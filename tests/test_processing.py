@@ -42,9 +42,18 @@ class TestProcessingFiles(unittest.TestCase):
         # check if zip file got deleted
         self.assertFalse(isfile(join(downloaded_dir, "flOw.zip")))
 
-    def test_deleting_duplicates(self):  # TODO
+    def test_deleting_duplicates(self):
         # run removing duplicates
-        pass
+        ogarniacz_mp3.remove_duplicates(processing_dir)
+        # make sure original flac was deleted and mp3 was kept
+        httyd_file = join(processing_dir, "How to Train Your Dragon - The Hidden World",
+                          "01. Raiders Return to Busy, Busy Berk")
+        self.assertFalse(isfile(httyd_file + ".flac"))
+        self.assertTrue(isfile(httyd_file + ".mp3"))
+        # make sure flac files that were no duplicates are still in place
+        _1917_dir = join(processing_dir, "1917FYC", "1917 (FYC)")
+        self.assertTrue(isfile(join(_1917_dir, "01. Meadow , First Trench.flac")))
+        self.assertTrue(isfile(join(_1917_dir, "02. Trench to Yorks.flac")))
 
     def test_converting_to_mp3(self):
         # run mp3 conversion
