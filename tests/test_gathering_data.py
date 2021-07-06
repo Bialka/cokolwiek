@@ -22,12 +22,30 @@ class TestMainDataGathering(unittest.TestCase):
             if music_dir.base_dir.endswith("Dolce Fine Giornata"):
                 for music_file in music_dir.music_files:
                     if music_file.file_path.endswith("1. Fishermen.mp3"):
-                        self.assertEqual(music_file.tracknumber, 1)
+                        self.assertEqual(music_file.track_number, 1)
                         self.assertEqual(music_file.title, "Fishermen")
                         self.assertEqual(music_file.artist, "Daniel Bloom")
                         self.assertEqual(music_file.album_artist, "Daniel Bloom")
-                        self.assertEqual(music_file.album_title, "Dolce Fine Giornata (feat. Leszek Możdżer)")
-
+                        self.assertEqual(music_file.album, "Dolce Fine Giornata (feat. Leszek Możdżer)")
+            elif music_dir.base_dir.endswith("The Hidden World"):
+                for music_file in music_dir.music_files:
+                    if music_file.file_path.endswith("Busy Berk.mp3"):
+                        self.assertEqual(music_file.track_number, 1)
+                        self.assertEqual(music_file.title, "Raiders Return to Busy, Busy Berk")
+                        self.assertEqual(music_file.artist, "John Powell")
+                        self.assertEqual(music_file.album_artist, None)
+                        self.assertEqual(music_file.album, "How to Train Your Dragon: "
+                                                           "The Hidden World (Original Motion Picture Soundtrack)")
+                        self.assertEqual(music_file.date, 2019)
+            elif music_dir.base_dir.endswith("Castle Rock (Single)"):
+                for music_file in music_dir.music_files:
+                    if music_file.file_path.endswith("01 Castle Rock (Main Theme) [From Castle Rock].mp3"):
+                        self.assertEqual(music_file.track_number, 1)
+                        self.assertEqual(music_file.title, "Castle Rock (Main Theme) [From \"Castle Rock\"]")
+                        self.assertEqual(music_file.artist, "Thomas Newman")
+                        self.assertEqual(music_file.album_artist, "Thomas Newman")
+                        self.assertEqual(music_file.album, "Castle Rock (Main Theme) [From \"Castle Rock\"]")
+                        self.assertEqual(music_file.date, 2018)
 
 class TestRecognisingMusic(unittest.TestCase):
 
@@ -52,36 +70,39 @@ class TestRecognisingMusic(unittest.TestCase):
 class TestReadingMp3Tags(unittest.TestCase):
 
     def test_happy_path(self):
-        from tags_handling import get_file_tags
+        from tags_handling import get_file_info
         # test on a file that has all required fields filled the right way
-        tags = get_file_tags(join(_test_data_dir, "Do Obróbki", "26-06-19", "Dolce Fine Giornata", "1. Fishermen.mp3"))
-        self.assertEqual(tags["tracknumber"], 1)
+        file_info = get_file_info(join(_test_data_dir, "Do Obróbki", "26-06-19", "Dolce Fine Giornata", "1. Fishermen.mp3"))
+        tags = file_info["tags"]
+        self.assertEqual(tags["track"], "1")
         self.assertEqual(tags["title"], "Fishermen")
         self.assertEqual(tags["artist"], "Daniel Bloom")
         self.assertEqual(tags["album_artist"], "Daniel Bloom")
-        self.assertEqual(tags["album_title"], "Dolce Fine Giornata (feat. Leszek Możdżer)")
-        self.assertEqual(tags["year"], 2019)
+        self.assertEqual(tags["album"], "Dolce Fine Giornata (feat. Leszek Możdżer)")
+        self.assertEqual(tags["date"], "2019")
 
     def test_sad_paths(self):
-        from tags_handling import get_file_tags
+        from tags_handling import get_file_info
         # TODO: a file without any mp3 tags present
         # a file without album artist
-        tags = get_file_tags(join(_test_data_dir, "Do Obróbki", "How to Train Your Dragon - The Hidden World",
-                                  "01. Raiders Return to Busy, Busy Berk.mp3"))
-        self.assertEqual(tags["tracknumber"], 1)
+        file_info = get_file_info(join(_test_data_dir, "Do Obróbki", "How to Train Your Dragon - The Hidden World",
+                                       "01. Raiders Return to Busy, Busy Berk.mp3"))
+        tags = file_info["tags"]
+        self.assertEqual(tags["track"], "01")
         self.assertEqual(tags["title"], "Raiders Return to Busy, Busy Berk")
         self.assertEqual(tags["artist"], "John Powell")
-        self.assertEqual(tags["album_artist"], None)
-        self.assertEqual(tags["album_title"], "How to Train Your Dragon: "
+        self.assertEqual(tags.get("album_artist"), None)
+        self.assertEqual(tags["album"], "How to Train Your Dragon: "
                                               "The Hidden World (Original Motion Picture Soundtrack)")
-        self.assertEqual(tags["year"], 2019)
+        self.assertEqual(tags["date"], "2019")
         # a file with x/y tracknumber format
 
-        tags = get_file_tags(join(_test_data_dir, "Do Obróbki", "Castle Rock (Single)",
-                                  "01 Castle Rock (Main Theme) [From Castle Rock].mp3"))
-        self.assertEqual(tags["tracknumber"], 1)
+        file_info = get_file_info(join(_test_data_dir, "Do Obróbki", "Castle Rock (Single)",
+                                       "01 Castle Rock (Main Theme) [From Castle Rock].mp3"))
+        tags = file_info["tags"]
+        self.assertEqual(tags["track"], "1/1")
         self.assertEqual(tags["title"], "Castle Rock (Main Theme) [From \"Castle Rock\"]")
         self.assertEqual(tags["artist"], "Thomas Newman")
         self.assertEqual(tags["album_artist"], "Thomas Newman")
-        self.assertEqual(tags["album_title"], "Castle Rock (Main Theme) [From \"Castle Rock\"]")
-        self.assertEqual(tags["year"], 2018)
+        self.assertEqual(tags["album"], "Castle Rock (Main Theme) [From \"Castle Rock\"]")
+        self.assertEqual(tags["date"], "2018")
