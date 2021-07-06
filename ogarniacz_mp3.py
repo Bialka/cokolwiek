@@ -69,7 +69,6 @@ def remove_duplicates(processing_dir_path):
                     another_name, another_ext = split_file_name(another_file_name)
                     if name == another_name:
                         if get_format_preference_index(ext) >= get_format_preference_index(another_ext):
-                            pass
                             try:
                                  os.remove(file_path)
                             except FileNotFoundError:
