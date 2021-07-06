@@ -17,3 +17,9 @@ python -m unittest discover
 ```
 
 Testy zakładają, że w katalogu `tests/TestData` są odpowiednie pliki testowe.
+
+Uruchomienie pojedynczego testu:
+
+```
+python -m unittest tests.test_gathering_data
+```
