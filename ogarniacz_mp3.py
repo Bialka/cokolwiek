@@ -57,6 +57,25 @@ def convert_to_mp3(processing_dir_path):
                         print(proc.stderr.decode())
 
 
+def remove_duplicates(processing_dir_path):
+    for dir_path, sub_dirs, files in os.walk(processing_dir_path):
+        for file_name in files:
+            file_path = os.path.join(dir_path, file_name)
+            if classes.MusicFile.is_music_file(file_path):
+                name, ext = split_file_name(file_name)
+                for another_file_name in files:
+                    if file_name == another_file_name:
+                        continue
+                    another_name, another_ext = split_file_name(another_file_name)
+                    if name == another_name:
+                        if get_format_preference_index(ext) >= get_format_preference_index(another_ext):
+                            pass
+                            try:
+                                 os.remove(file_path)
+                            except FileNotFoundError:
+                                continue # skoro tego pliku nie ma, to nie ma co tutaj robić
+
+
 def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do kat jako argument, znaleźć w kat wszystkie pliki .zip, rozpakować je do kat "do obróbki"
     for dir_path, sub_dirs, files in os.walk(source_dir_path):
         for f in files:
@@ -77,22 +96,7 @@ def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do ka
 def processing_to_verification(processing_dir_path, verification_dir_path):
     # 1. przeprocesowanie plików z kat procecessing:
     # a) pozbyć się duplikatów
-    for dir_path, sub_dirs, files in os.walk(processing_dir_path):
-        for file_name in files:
-            file_path = os.path.join(dir_path, file_name)
-            if classes.MusicFile.is_music_file(file_path):
-                name, ext = split_file_name(file_name)
-                for another_file_name in files:
-                    if file_name == another_file_name:
-                        continue
-                    another_name, another_ext = split_file_name(another_file_name)
-                    if name == another_name:
-                        if get_format_preference_index(ext) >= get_format_preference_index(another_ext):
-                            pass
-                            try:
-                                 os.remove(file_path)
-                            except FileNotFoundError:
-                                continue # skoro tego pliku nie ma, to nie ma co tutaj robić
+    remove_duplicates(processing_dir_path)
     # b) przekonwertować nie mp3 na mp3
     convert_to_mp3(processing_dir_path)
     # c) dostosować bitrate'y tam, gdzie to konieczne
