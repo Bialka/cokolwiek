@@ -1,4 +1,7 @@
+import json
+
 from mutagen.easyid3 import EasyID3
+import subprocess
 
 
 def tracknumber_tag(file_path, audio):
@@ -58,3 +61,11 @@ def get_file_tags(file_path):
             "album_title": album_title_tag(file_path, audio),
             "year": year_tag(file_path, audio)}
     return tags
+
+
+def get_file_info(file_path):
+    proc = subprocess.run(["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", file_path],
+                          stdout=subprocess.PIPE)
+    file_info = proc.stdout.decode("utf-8")
+    data = json.loads(file_info)
+    return data["format"]

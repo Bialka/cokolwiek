@@ -10,23 +10,37 @@ class MusicFile:
     def __init__(self, file_path):
         self.file_path = file_path
 
-        self.tracknumber = None
-        self.title = None
-        self.artist = None
-        self.album_artist = None
-        self.album_title = None
-        self.year = None
+        self.file_info = tags_handling.get_file_info(file_path)
 
-        self.read_tags()
-        print(self.album_title, self.tracknumber, self.title)
+    def __getattr__(self, item):
+        if item in self.file_info:
+            return self.file_info[item]
+        if item in self.file_info.get("tags", {}):
+            return self.file_info["tags"][item]
+        raise AttributeError(f"'MusicFile' has no attribute '{item}'")
+
+    @property
+    def track_number(self):
+        track_nr = self.file_info.get("tags", {}).get("track")
+        if track_nr is None:
+            return None
+        return int(self.track.split("/")[0])
+
+    @property
+    def album_artist(self):
+        return self.file_info.get("tags", {}).get("album_artist")
+
+    @property
+    def date(self):
+        try:
+            return int(self.file_info.get("tags", {}).get("date"))
+        except ValueError:
+            return None
 
     @classmethod
     def is_music_file(cls, file_path):
         return (mimetypes.guess_type(file_path)[0] or '').startswith("audio/")
 
-    def read_tags(self):
-        for key, val in tags_handling.get_file_tags(self.file_path).items():
-            setattr(self, key, val)
 
 
 class MusicDir:
