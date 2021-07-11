@@ -14,7 +14,7 @@ class TestMainDataGathering(unittest.TestCase):
         music_dirs = get_music_dirs(join(_test_data_dir, "Do Obróbki"))
 
         # check if all music dirs were found
-        self.assertEqual(len(music_dirs), 6)
+        self.assertEqual(len(music_dirs), 8)
         # check if MusicFile objects were created within MusicDirs
         for music_dir in music_dirs:
             self.assertTrue(len(music_dir.music_files) > 0)
