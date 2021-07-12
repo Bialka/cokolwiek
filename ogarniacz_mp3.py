@@ -26,6 +26,7 @@ def reading_arguments_from_terminal():
     args = parser.parse_args()
     return args
 
+
 def split_file_name(file_name):
     name = re.sub(r'\.[^.]+?$', "", file_name)
     ext = file_name.replace(name, "").lstrip(".")
@@ -119,7 +120,7 @@ if __name__ == "__main__":
     from_dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData/Pobrane"
     processing_dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData/Do Obróbki"
     verification_dir_path = "/home/katrzyna/Documents/cokolwiek/tests/TestData/Weryfikacja"
-    #get_music_dirs(dir_path)
+    get_music_dirs(dir_path)
     args = reading_arguments_from_terminal()
     if args.p2o:
         downloaded_to_processing(from_dir_path, processing_dir_path)

@@ -2,7 +2,6 @@
 import os
 from os.path import join
 import tags_handling
-from mutagen.easyid3 import EasyID3
 import mimetypes
 
 
@@ -40,7 +39,6 @@ class MusicFile:
     @classmethod
     def is_music_file(cls, file_path):
         return (mimetypes.guess_type(file_path)[0] or '').startswith("audio/")
-
 
 
 class MusicDir:
