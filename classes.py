@@ -1,7 +1,7 @@
 
 import os
 from os.path import join
-import tags_handling
+import getting_file_info
 import mimetypes
 
 
@@ -9,7 +9,7 @@ class MusicFile:
     def __init__(self, file_path):
         self.file_path = file_path
 
-        self.file_info = tags_handling.get_file_info(file_path)
+        self.file_info = getting_file_info.get_file_info(file_path)
 
     def __getattr__(self, item):
         if item in self.file_info:
