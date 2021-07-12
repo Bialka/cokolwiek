@@ -70,7 +70,7 @@ class TestRecognisingMusic(unittest.TestCase):
 class TestReadingMp3Tags(unittest.TestCase):
 
     def test_happy_path(self):
-        from tags_handling import get_file_info
+        from getting_file_info import get_file_info
         # test on a file that has all required fields filled the right way
         file_info = get_file_info(join(_test_data_dir, "Do Obróbki", "26-06-19", "Dolce Fine Giornata", "1. Fishermen.mp3"))
         tags = file_info["tags"]
@@ -82,7 +82,7 @@ class TestReadingMp3Tags(unittest.TestCase):
         self.assertEqual(tags["date"], "2019")
 
     def test_sad_paths(self):
-        from tags_handling import get_file_info
+        from getting_file_info import get_file_info
         # TODO: a file without any mp3 tags present
         # a file without album artist
         file_info = get_file_info(join(_test_data_dir, "Do Obróbki", "How to Train Your Dragon - The Hidden World",
