@@ -1,5 +1,5 @@
 import json
-from os.path import dirname, isfile, isdir, join, realpath
+from os.path import dirname, getctime, isfile, isdir, join, realpath
 import shutil
 import subprocess
 import unittest
@@ -28,7 +28,10 @@ class TestProcessingFiles(unittest.TestCase):
         proc = subprocess.run(["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", file_path],
                               stdout=subprocess.PIPE)
 
-        return json.loads(proc.stdout.decode("utf-8"))['format']
+        info = json.loads(proc.stdout.decode("utf-8"))['format']
+        # add file creation timestamp to info
+        info["ctime"] = getctime(file_path)
+        return info
 
     def test_unzipping(self):
         # run unzipping
@@ -78,3 +81,33 @@ class TestProcessingFiles(unittest.TestCase):
         self.assertEqual(file_info["tags"]["album"], "1917 (FYC)")
         self.assertEqual(file_info["tags"]["track"], "02/17")
         self.assertEqual(file_info["tags"]["album_artist"], "Thomas Newman")
+
+    def test_bitrate_adjustment(self):
+        top_bitrate = 142000
+        # get file paths
+        sorry_path = join(processing_dir, "Big Mess", "CD1", "1. Sorry.mp3")
+        happy_path = join(processing_dir, "Big Mess", "CD2", "1. Happy.mp3")
+        fisherman_path = join(processing_dir, "26-06-19", "Dolce Fine Giornata", "1. Fishermen.mp3")
+        # get files infos
+        sorry_info_1 = self.get_file_info(sorry_path)
+        happy_info_1 = self.get_file_info(happy_path)
+        fisherman_info_1 = self.get_file_info(fisherman_path)
+
+        ogarniacz_mp3.adjust_bitrates(processing_dir)
+
+        # get data after changes and do the assertions
+        sorry_info_2 = self.get_file_info(sorry_path)
+        self.assertTrue(int(sorry_info_1["bit_rate"]) > int(sorry_info_2["bit_rate"]))
+        self.assertTrue(top_bitrate > int(sorry_info_2["bit_rate"]))
+        self.assertTrue(sorry_info_1["ctime"] < sorry_info_2["ctime"])
+
+        happy_info_2 = self.get_file_info(happy_path)
+        self.assertTrue(int(happy_info_1["bit_rate"]) > int(happy_info_2["bit_rate"]))
+        self.assertTrue(top_bitrate > int(happy_info_2["bit_rate"]))
+        self.assertTrue(happy_info_1["ctime"] < happy_info_2["ctime"])
+
+        # ensure fisherman wasn't touched
+        fisherman_info_2 = self.get_file_info(fisherman_path)
+        self.assertEqual(fisherman_info_1["bit_rate"], fisherman_info_2["bit_rate"])
+        self.assertEqual(fisherman_info_1["ctime"], fisherman_info_2["ctime"])
+
