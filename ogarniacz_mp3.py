@@ -76,6 +76,20 @@ def remove_duplicates(processing_dir_path):
                                 continue # skoro tego pliku nie ma, to nie ma co tutaj robić
 
 
+def adjust_bitrates(processing_dir_path):
+    for dir_path, sub_dirs, files in os.walk(processing_dir_path):
+        for file_name in files:
+            file_path = os.path.join(dir_path, file_name)
+            if classes.MusicFile.is_music_file(file_path):
+                bitrate = classes.MusicFile.__getattr__("bit_rate")
+                if bitrate > 142000:
+                    output_path = os.path.join(dir_path, "tym" + file_name)
+                    proc = subprocess.run(["ffmpeg", "-i", file_path, "-vn", "-ar", "44100", "-ac", "2", "-b:a", "142000",
+                                           output_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    with open(file_path, "w") as f:
+                        f.write(output_path)
+
+
 def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do kat jako argument, znaleźć w kat wszystkie pliki .zip, rozpakować je do kat "do obróbki"
     for dir_path, sub_dirs, files in os.walk(source_dir_path):
         for f in files:
@@ -100,6 +114,7 @@ def processing_to_verification(processing_dir_path, verification_dir_path):
     # b) przekonwertować nie mp3 na mp3
     convert_to_mp3(processing_dir_path)
     # c) dostosować bitrate'y tam, gdzie to konieczne
+    adjust_bitrates(processing_dir_path)
     # d) dostosować poziom głośności
     # e) znormalizować tagi
     # f) pozbyć się zbędnych tagów
