@@ -87,8 +87,11 @@ def adjust_bitrates(processing_dir_path):
                     output_path = os.path.join(dir_path, "tym" + file_name)
                     proc = subprocess.run(["ffmpeg", "-i", file_path, "-vn", "-ar", "44100", "-ac", "2", "-b:a", "142000",
                                            output_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    shutil.copy(output_path, file_path)
-                    os.remove(output_path)
+                    if proc.returncode == 0:
+                        shutil.copy(output_path, file_path)
+                        os.remove(output_path)
+                    else:
+                        print(proc.stderr.decode())
 
 
 def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do kat jako argument, znaleźć w kat wszystkie pliki .zip, rozpakować je do kat "do obróbki"
