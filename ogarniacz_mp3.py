@@ -79,22 +79,22 @@ def remove_duplicates(processing_dir_path):
 
 def adjust_bitrates(processing_dir_path):
     for dir_path, sub_dirs, files in os.walk(processing_dir_path):
-        for file_name in files:
-            file_path = os.path.join(dir_path, file_name)
-            if classes.MusicFile.is_music_file(file_path):
-                music_file = classes.MusicFile(file_path)
-                bitrate = int(music_file.bit_rate)
-                if bitrate > 142000:
-                    with tempfile.TemporaryDirectory() as temp_dir_name:
-                        print("Created temporary directory", temp_dir_name)
-                        output_path = os.path.join(temp_dir_name, file_name)
-                        proc = subprocess.run(["ffmpeg", "-i", file_path, "-vn", "-ar", "44100", "-ac", "2", "-b:a", "142000",
-                                               output_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                        if proc.returncode == 0:
-                            shutil.copy(output_path, file_path)
-                            os.remove(output_path)
-                        else:
-                            print(proc.stderr.decode())
+        for dir_name in dir_path:
+            with tempfile.TemporaryDirectory() as temp_dir_name:
+                for file_name in files:
+                    file_path = os.path.join(dir_path, file_name)
+                    if classes.MusicFile.is_music_file(file_path):
+                        music_file = classes.MusicFile(file_path)
+                        bitrate = int(music_file.bit_rate)
+                        if bitrate > 142000:
+                            output_path = os.path.join(temp_dir_name, file_name)
+                            proc = subprocess.run(["ffmpeg", "-i", file_path, "-vn", "-ar", "44100", "-ac", "2", "-b:a", "142000",
+                                                   output_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            if proc.returncode == 0:
+                                shutil.copy(output_path, file_path)
+                                os.remove(output_path)
+                            else:
+                                print(proc.stderr.decode())
 
 
 def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do kat jako argument, znaleźć w kat wszystkie pliki .zip, rozpakować je do kat "do obróbki"
