@@ -13,7 +13,7 @@ downloaded_dir = join(_tmp_test_data_dir, "Pobrane")
 processing_dir = join(_tmp_test_data_dir, "Do Obróbki")
 
 
-class TestProcessingFiles(unittest.TestCase):
+class BaseProcessingFilesTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
         # create temporary data folder
@@ -32,6 +32,9 @@ class TestProcessingFiles(unittest.TestCase):
         # add file creation timestamp to info
         info["ctime"] = getctime(file_path)
         return info
+
+
+class TestProcessingFiles(BaseProcessingFilesTestCase):
 
     def test_unzipping(self):
         # run unzipping
@@ -111,3 +114,27 @@ class TestProcessingFiles(unittest.TestCase):
         self.assertEqual(fisherman_info_1["bit_rate"], fisherman_info_2["bit_rate"])
         self.assertEqual(fisherman_info_1["ctime"], fisherman_info_2["ctime"])
 
+
+class TestWritingMp3Tags(BaseProcessingFilesTestCase):
+
+    def test_writing_id3_tags(self):
+        file_path = join(_test_data_dir, "Do Obróbki", "How to Train Your Dragon - The Hidden World",
+                         "01. Raiders Return to Busy, Busy Berk.mp3")
+        # make adjustments
+        from getting_file_info import set_file_info
+        changes = {
+            "album_artist": "John Powell",
+            "album": "How to Train Your Dragon: The Hidden World"
+        }
+        set_file_info(file_path, changes)
+        # verify file after changes
+        file_info = self.get_file_info(file_path)
+        tags = file_info["tags"]
+        # things that changed
+        self.assertEqual(tags["album"], "How to Train Your Dragon: The Hidden World")
+        self.assertEqual(tags["album_artist"], "John Powell")
+        # things that should stay the same
+        self.assertEqual(tags["track"], "01")
+        self.assertEqual(tags["title"], "Raiders Return to Busy, Busy Berk")
+        self.assertEqual(tags["artist"], "John Powell")
+        self.assertEqual(tags["date"], "2019")
