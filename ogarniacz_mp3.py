@@ -113,7 +113,19 @@ def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do ka
                 except BadZipfile:
                     print(f"Plik {f} nie jest plikiem .zip.")
 
-                    
+def getting_objects(processing_dir_path):
+    dir_objects = []
+    file_objects = []
+    for dir_path, sub_dirs, files in os.walk(processing_dir_path, topdown=False):
+        music_dir = classes.MusicDir(dir_path)
+        dir_objects.append(music_dir)
+        for file in files:
+            music_file = classes.MusicFile(file)
+            file_objects.append(music_file)
+    return dir_objects, file_objects
+
+
+
 def processing_to_verification(processing_dir_path, verification_dir_path):
     # 1. przeprocesowanie plików z kat procecessing:
     # a) pozbyć się duplikatów
