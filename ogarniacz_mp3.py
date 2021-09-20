@@ -115,14 +115,11 @@ def downloaded_to_processing(source_dir_path, target_dir_path): #ścieżka do ka
 
 def getting_objects(processing_dir_path):
     dir_objects = []
-    file_objects = []
-    for dir_path, sub_dirs, files in os.walk(processing_dir_path, topdown=False):
-        music_dir = classes.MusicDir(dir_path)
-        dir_objects.append(music_dir)
-        for file in files:
-            music_file = classes.MusicFile(file)
-            file_objects.append(music_file)
-    return dir_objects, file_objects
+    for dir_path, sub_dirs, files in os.walk(processing_dir_path):
+        if classes.MusicDir.is_music_dir(dir_path):
+            music_dir = classes.MusicDir(dir_path)
+            dir_objects.append(music_dir)
+    return dir_objects
 
 
 
