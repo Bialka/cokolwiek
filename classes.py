@@ -3,6 +3,7 @@ import os
 from os.path import join
 import getting_file_info
 import mimetypes
+import subprocess
 
 
 class MusicFile:
@@ -39,6 +40,16 @@ class MusicFile:
     @classmethod
     def is_music_file(cls, file_path):
         return (mimetypes.guess_type(file_path)[0] or '').startswith("audio/")
+
+    def get_volume_info(self, input_file):
+        proc = subprocess.run(["ffmpeg", "-i", input_file.mp3, "-af", "volumedetect", "-vn", "-sn", "-dn", "-f",
+                               "null", "/dev/null"])
+        if proc.returncode == 0:
+            txt = proc.stderr.decode()
+            if txt.startswith("[Parsed_volumedetect"):
+                print(txt)
+        else:
+            print(proc.stderr.decode())
 
 
 class MusicDir:
