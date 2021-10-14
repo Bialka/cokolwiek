@@ -3,6 +3,7 @@ import os
 from os.path import join
 import getting_file_info
 import mimetypes
+import subprocess
 
 
 class MusicFile:
@@ -40,6 +41,18 @@ class MusicFile:
     def is_music_file(cls, file_path):
         return (mimetypes.guess_type(file_path)[0] or '').startswith("audio/")
 
+    def get_volume_info(self, input_file):
+        proc = subprocess.run(["ffmpeg", "-i", input_file.mp3, "-af", "volumedetect", "-vn", "-sn", "-dn", "-f",
+                               "null", "/dev/null"])
+        if proc.returncode == 0:
+            txt = proc.stderr.decode()
+            lines = txt.split("\n")
+            for line in lines:
+                if line.startswith("[Parsed_volumedetect"):
+                    print(line)
+        else:
+            print(proc.stderr.decode())
+
 
 class MusicDir:
     def __init__(self, base_dir):
@@ -60,3 +73,9 @@ class MusicDir:
 
     def get_control_string(self):
         pass  # TODO
+
+    def adjust_loudness(self, processing_dir_path):
+        for f in self.music_files:
+            volume_info = MusicFile.get_volume_info(f, f)
+            print(volume_info)
+
