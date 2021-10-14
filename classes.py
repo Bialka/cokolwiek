@@ -46,8 +46,10 @@ class MusicFile:
                                "null", "/dev/null"])
         if proc.returncode == 0:
             txt = proc.stderr.decode()
-            if txt.startswith("[Parsed_volumedetect"):
-                print(txt)
+            lines = txt.split("\n")
+            for line in lines:
+                if line.startswith("[Parsed_volumedetect"):
+                    print(line)
         else:
             print(proc.stderr.decode())
 
@@ -71,3 +73,9 @@ class MusicDir:
 
     def get_control_string(self):
         pass  # TODO
+
+    def adjust_loudness(self, processing_dir_path):
+        for f in self.music_files:
+            volume_info = MusicFile.get_volume_info(f, f)
+            print(volume_info)
+

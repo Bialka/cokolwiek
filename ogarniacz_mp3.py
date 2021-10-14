@@ -122,16 +122,18 @@ def getting_objects(processing_dir_path):
     return dir_objects
 
 
-
 def processing_to_verification(processing_dir_path, verification_dir_path):
     # 1. przeprocesowanie plików z kat procecessing:
     # a) pozbyć się duplikatów
-    remove_duplicates(processing_dir_path)
+    #remove_duplicates(processing_dir_path)
     # b) przekonwertować nie mp3 na mp3
-    convert_to_mp3(processing_dir_path)
+    #convert_to_mp3(processing_dir_path)
     # c) dostosować bitrate'y tam, gdzie to konieczne
-    adjust_bitrates(processing_dir_path)
+    #adjust_bitrates(processing_dir_path)
     # d) dostosować poziom głośności
+    dir_objects = getting_objects(processing_dir_path)
+    for dir_object in dir_objects:
+        dir_object.adjust_loudness(processing_dir_path)
     # e) znormalizować tagi
     # f) pozbyć się zbędnych tagów
     # 2. przeniesienie ich do verification
